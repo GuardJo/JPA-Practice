@@ -8,7 +8,6 @@ import java.util.Objects;
 @Table(name = "MEMBER")
 public class Member {
     @Id
-    @Column(name = "ID")
     private String id;
     @Column(name = "NAME")
     private String userName;
@@ -17,7 +16,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private RoleType roleType = RoleType.USER;
     @Temporal(TemporalType.TIMESTAMP)
-    private Date registDate;
+    private Date createdDate;
     @Temporal(TemporalType.TIMESTAMP)
     private Date modifiedDate;
     @Lob
@@ -60,12 +59,12 @@ public class Member {
         this.roleType = roleType;
     }
 
-    public Date getRegistDate() {
-        return registDate;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public void setRegistDate(Date registDate) {
-        this.registDate = registDate;
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
     }
 
     public Date getModifiedDate() {
