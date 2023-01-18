@@ -14,7 +14,7 @@ public class Member {
     @Column(nullable = false)
     private int age;
 
-    public Member() {
+    protected Member() {
     }
 
     protected Member(String id, String userName, int age) {
