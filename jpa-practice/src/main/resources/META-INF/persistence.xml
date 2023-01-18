@@ -17,7 +17,7 @@
       <property name="hibernate.format_sql" value="true"/>
       <property name="hibernate.use_sql_comments" value="true"/>
       <property name="hibernate.hbm2ddl.auto" value="create"/>
-      <property name="hibernate.physical_naming_strategy" value="com.practice.jpa.chapter03.util.CustomPhysicalNamingStrategy"/>
+      <property name="hibernate.physical_naming_strategy" value="com.practice.jpa.util.CustomPhysicalNamingStrategy"/>
     </properties>
 
   </persistence-unit>

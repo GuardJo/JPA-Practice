@@ -1,4 +1,4 @@
-package com.practice.jpa.chapter03.util;
+package com.practice.jpa.util;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategy;

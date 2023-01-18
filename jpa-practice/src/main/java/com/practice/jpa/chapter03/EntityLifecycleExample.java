@@ -1,4 +1,4 @@
-package com.practice.jpa.chapter03.example;
+package com.practice.jpa.chapter03;
 
 import com.practice.jpa.data.Member;
 

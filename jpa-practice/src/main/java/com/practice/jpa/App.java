@@ -1,9 +1,9 @@
 package com.practice.jpa;
 
-import com.practice.jpa.chapter02.example.JpaExample;
-import com.practice.jpa.chapter03.example.DirtyCheckingExample;
-import com.practice.jpa.chapter03.example.EntityLifecycleExample;
-import com.practice.jpa.chapter03.example.MergeExample;
+import com.practice.jpa.chapter02.JpaExample;
+import com.practice.jpa.chapter03.DirtyCheckingExample;
+import com.practice.jpa.chapter03.EntityLifecycleExample;
+import com.practice.jpa.chapter03.MergeExample;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
