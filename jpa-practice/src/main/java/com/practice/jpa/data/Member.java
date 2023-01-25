@@ -8,7 +8,6 @@ import java.util.Objects;
 @Table(name = "MEMBER")
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     @Column(name = "NAME", nullable = false, length = 10)
     private String userName;
