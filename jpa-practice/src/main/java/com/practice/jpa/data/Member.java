@@ -1,18 +1,26 @@
 package com.practice.jpa.data;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Table(name = "MEMBER")
 public class Member {
     @Id
-    @Column(name = "ID")
     private String id;
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false, length = 10)
     private String userName;
     @Column(nullable = false)
     private int age;
+    @Enumerated(EnumType.STRING)
+    private RoleType roleType = RoleType.USER;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date modifiedDate;
+    @Lob
+    private String description;
 
     protected Member() {
     }
@@ -41,6 +49,38 @@ public class Member {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public RoleType getRoleType() {
+        return roleType;
+    }
+
+    public void setRoleType(RoleType roleType) {
+        this.roleType = roleType;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public Date getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(Date modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

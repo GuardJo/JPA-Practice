@@ -1,9 +1,10 @@
 package com.practice.jpa;
 
-import com.practice.jpa.chapter02.example.JpaExample;
-import com.practice.jpa.chapter03.example.DirtyCheckingExample;
-import com.practice.jpa.chapter03.example.EntityLifecycleExample;
-import com.practice.jpa.chapter03.example.MergeExample;
+import com.practice.jpa.chapter02.JpaExample;
+import com.practice.jpa.chapter03.DirtyCheckingExample;
+import com.practice.jpa.chapter03.EntityLifecycleExample;
+import com.practice.jpa.chapter03.MergeExample;
+import com.practice.jpa.chapter04.IdGenerationExample;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -21,11 +22,13 @@ public class App {
         EntityLifecycleExample entityLifecycleExample = new EntityLifecycleExample(entityManagerFactory);
         DirtyCheckingExample dirtyCheckingExample = new DirtyCheckingExample(entityManagerFactory);
         MergeExample mergeExample = new MergeExample(entityManagerFactory);
+        IdGenerationExample idGenerationExample = new IdGenerationExample(entityManagerFactory);
 
-        jpaExample.run();
-        entityLifecycleExample.run();
-        dirtyCheckingExample.run();
-        mergeExample.run();
+//        jpaExample.run();
+//        entityLifecycleExample.run();
+//        dirtyCheckingExample.run();
+//        mergeExample.run();
+        idGenerationExample.run();
 
         entityManagerFactory.close();
     }
