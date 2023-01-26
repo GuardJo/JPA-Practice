@@ -14,6 +14,7 @@ import java.util.Objects;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ORDER_ITEM_ID")
     private Long id;
     @Column(nullable = false)
     private String name;

@@ -16,6 +16,7 @@ import java.util.Objects;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "ORDER_ID")
     private Long id;
     @Column(nullable = false)
     @Temporal(value = TemporalType.TIMESTAMP)
