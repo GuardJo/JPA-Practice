@@ -5,6 +5,7 @@ import com.practice.jpa.chapter03.DirtyCheckingExample;
 import com.practice.jpa.chapter03.EntityLifecycleExample;
 import com.practice.jpa.chapter03.MergeExample;
 import com.practice.jpa.chapter04.IdGenerationExample;
+import com.practice.jpa.chapter07.MultiIdExample;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -23,12 +24,14 @@ public class App {
         DirtyCheckingExample dirtyCheckingExample = new DirtyCheckingExample(entityManagerFactory);
         MergeExample mergeExample = new MergeExample(entityManagerFactory);
         IdGenerationExample idGenerationExample = new IdGenerationExample(entityManagerFactory);
+        MultiIdExample multiIdExample = new MultiIdExample(entityManagerFactory);
 
 //        jpaExample.run();
 //        entityLifecycleExample.run();
 //        dirtyCheckingExample.run();
 //        mergeExample.run();
-        idGenerationExample.run();
+//        idGenerationExample.run();
+        multiIdExample.run();
 
         entityManagerFactory.close();
     }
