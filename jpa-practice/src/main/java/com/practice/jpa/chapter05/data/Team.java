@@ -1,6 +1,8 @@
 package com.practice.jpa.chapter05.data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,6 +16,9 @@ public class Team {
     @Column(length = 255)
     private String name;
 
+    @OneToMany(mappedBy = "team")
+    private List<Person> personList = new ArrayList<>();
+
     public Long getId() {
         return id;
     }
@@ -24,6 +29,14 @@ public class Team {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Person> getPersonList() {
+        return personList;
+    }
+
+    public void setPersonList(List<Person> personList) {
+        this.personList = personList;
     }
 
     @Override
