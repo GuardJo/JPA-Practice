@@ -41,6 +41,8 @@ public class RelationMappingExample implements Runnable {
 
 		saveMemberWithTeam(entityManager);
 
+		saveMemberWthTeamChange(entityManager);
+
 		entityManager.close();
 	}
 
@@ -211,7 +213,45 @@ public class RelationMappingExample implements Runnable {
 
 		System.out.println(savePerson.toString());
 		System.out.println(saveTeam.toString());
+		saveTeam.getPersonList()
+			.forEach(person1 -> System.out.println(person1.toString()));
 
 		transaction.commit();
 	}
+
+	/**
+	 * 양방향 매핑 관계에서 양쪽 관계 설정 후 다른 객체와 변경 테스트
+	 * @param entityManager
+	 */
+	private void saveMemberWthTeamChange(EntityManager entityManager) {
+		System.out.println("양방향 매핑 요소 변경 테스트");
+		Person person = Person.of("tester");
+		Team team = Team.of("test33");
+		Team changeTeam = Team.of("change");
+
+		person.setTeam(team);
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.persist(team);
+		entityManager.persist(person);
+		entityManager.persist(changeTeam);
+
+		person.setTeam(changeTeam);
+
+		Person savePerson = entityManager.find(Person.class, person.getId());
+		Team saveTeam = entityManager.find(Team.class, team.getId());
+		Team saveChangeTeam = entityManager.find(Team.class, changeTeam.getId());
+
+		System.out.println(savePerson.toString());
+		System.out.println(saveTeam.toString());
+		saveTeam.getPersonList()
+			.forEach(person1 -> System.out.println(person1.toString()));
+		System.out.println(saveChangeTeam.toString());
+		saveChangeTeam.getPersonList()
+			.forEach(person1 -> System.out.println(person1.toString()));
+
+		transaction.commit();
+	}
+
 }
