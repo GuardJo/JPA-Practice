@@ -6,9 +6,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
-import com.practice.jpa.chapter05.data.Person;
+import com.practice.jpa.chapter05.data.OldPerson;
 import com.practice.jpa.chapter05.data.Team;
-import com.practice.jpa.data.Member;
 
 public class RelationMappingExample implements Runnable {
 	private final EntityManagerFactory entityManagerFactory;
@@ -23,19 +22,19 @@ public class RelationMappingExample implements Runnable {
 
 		System.out.println("연관관계 매핑 기초");
 
-		Person person = persistPersonAndTeam(Team.of("testTeam"), entityManager);
+		OldPerson oldPerson = persistPersonAndTeam(Team.of("testTeam"), entityManager);
 
-		System.out.println(person.toString());
+		System.out.println(oldPerson.toString());
 
-		readPersonAndTeamWithClassGraph(person.getId(), entityManager);
-		readPersonAndTeamWithJpql(person.getId(), entityManager);
-		readTeamAndPerson(person.getTeam().getId(), entityManager);
+		readPersonAndTeamWithClassGraph(oldPerson.getId(), entityManager);
+		readPersonAndTeamWithJpql(oldPerson.getId(), entityManager);
+		readTeamAndPerson(oldPerson.getTeam().getId(), entityManager);
 
-		updateRelation(Team.of("newTeam"), entityManager, person.getId());
+		updateRelation(Team.of("newTeam"), entityManager, oldPerson.getId());
 
-		removeTeam(person, entityManager);
+		removeTeam(oldPerson, entityManager);
 
-		endOfRelationOfTeam(person.getId(), entityManager);
+		endOfRelationOfTeam(oldPerson.getId(), entityManager);
 
 		saveNonMember(entityManager);
 
@@ -53,20 +52,20 @@ public class RelationMappingExample implements Runnable {
 	 * @param entityManager 엔티티 매니저
 	 * @return 연관 관계를 지닌 Person 영속 객체 반환
 	 */
-	private Person persistPersonAndTeam(Team team, EntityManager entityManager) {
+	private OldPerson persistPersonAndTeam(Team team, EntityManager entityManager) {
 		System.out.println("N : 1 관계 매핑");
 		EntityTransaction transaction = entityManager.getTransaction();
 
 		transaction.begin();
 		entityManager.persist(team);
 
-		Person person = Person.of("tester");
-		person.setTeam(team);
-		entityManager.persist(person);
+		OldPerson oldPerson = OldPerson.of("tester");
+		oldPerson.setTeam(team);
+		entityManager.persist(oldPerson);
 
 		transaction.commit();
 
-		return person;
+		return oldPerson;
 	}
 
 	/**
@@ -77,19 +76,19 @@ public class RelationMappingExample implements Runnable {
 	 * @param personId      수정할 Person 객체 식별값
 	 * @return 수정된 Person 영속 객체
 	 */
-	private Person updateRelation(Team team, EntityManager entityManager, long personId) {
+	private OldPerson updateRelation(Team team, EntityManager entityManager, long personId) {
 		System.out.println("연관된 Entity 객체 갱신 테스트");
 		EntityTransaction transaction = entityManager.getTransaction();
 
 		transaction.begin();
 		entityManager.persist(team);
 
-		Person person = entityManager.find(Person.class, personId);
-		person.setTeam(team);
+		OldPerson oldPerson = entityManager.find(OldPerson.class, personId);
+		oldPerson.setTeam(team);
 
 		transaction.commit();
 
-		return person;
+		return oldPerson;
 	}
 
 	/**
@@ -98,10 +97,10 @@ public class RelationMappingExample implements Runnable {
 	 */
 	private void readPersonAndTeamWithClassGraph(Long personId, EntityManager entityManager) {
 		System.out.println("객체 그래프 탐색 테스트");
-		Person person = entityManager.find(Person.class, personId);
-		Team team = person.getTeam();
+		OldPerson oldPerson = entityManager.find(OldPerson.class, personId);
+		Team team = oldPerson.getTeam();
 
-		System.out.println(person.toString());
+		System.out.println(oldPerson.toString());
 		System.out.println(team.toString());
 	}
 
@@ -112,14 +111,14 @@ public class RelationMappingExample implements Runnable {
 	private void readPersonAndTeamWithJpql(Long personId, EntityManager entityManager) {
 		System.out.println("JPQL 탐색 테스트");
 
-		String jpql = "select p from Person p join p.team t where t.name=:teamName";
+		String jpql = "select p from OldPerson p join p.team t where t.name=:teamName";
 
-		List<Person> personList = entityManager.createQuery(jpql, Person.class)
+		List<OldPerson> oldPersonList = entityManager.createQuery(jpql, OldPerson.class)
 			.setParameter("teamName", "testTeam")
 			.getResultList();
 
-		for (Person person : personList) {
-			System.out.println(person.toString());
+		for (OldPerson oldPerson : oldPersonList) {
+			System.out.println(oldPerson.toString());
 		}
 	}
 
@@ -133,10 +132,10 @@ public class RelationMappingExample implements Runnable {
 
 		Team team = entityManager.find(Team.class, teamId);
 
-		List<Person> personList = team.getPersonList();
+		List<OldPerson> oldPersonList = team.getPersonList();
 
-		for (Person person : personList) {
-			System.out.println(person.toString());
+		for (OldPerson oldPerson : oldPersonList) {
+			System.out.println(oldPerson.toString());
 		}
 	}
 
@@ -150,8 +149,8 @@ public class RelationMappingExample implements Runnable {
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		Person person = entityManager.find(Person.class, personId);
-		person.setTeam(null);
+		OldPerson oldPerson = entityManager.find(OldPerson.class, personId);
+		oldPerson.setTeam(null);
 
 		transaction.commit();
 	}
@@ -160,14 +159,14 @@ public class RelationMappingExample implements Runnable {
 	 * 연관관계에 걸려있는 테이블 제거
 	 * @param entityManager
 	 */
-	private void removeTeam(Person person, EntityManager entityManager) {
+	private void removeTeam(OldPerson oldPerson, EntityManager entityManager) {
 		System.out.println("연관관계에 걸려있는 테이블 제거");
 
-		Team team = person.getTeam();
+		Team team = oldPerson.getTeam();
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
-		person.setTeam(null);
+		oldPerson.setTeam(null);
 		entityManager.remove(team);
 		transaction.commit();
 	}
@@ -179,9 +178,9 @@ public class RelationMappingExample implements Runnable {
 	private void saveNonMember(EntityManager entityManager) {
 		System.out.println("양방향 매핑 시 주인이 아닌 쪽만 업데이트 하는 경우");
 
-		Person person = Person.of("tester");
+		OldPerson oldPerson = OldPerson.of("tester");
 		Team team = Team.of("Test22");
-		team.getPersonList().add(person);
+		team.getPersonList().add(oldPerson);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
@@ -198,23 +197,23 @@ public class RelationMappingExample implements Runnable {
 	 */
 	private void saveMemberWithTeam(EntityManager entityManager) {
 		System.out.println("양방향 매핑을 통한 데이터 조회");
-		Person person = Person.of("tester");
+		OldPerson oldPerson = OldPerson.of("tester");
 		Team team = Team.of("test33");
 
-		person.setTeam(team);
+		oldPerson.setTeam(team);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		entityManager.persist(team);
-		entityManager.persist(person);
+		entityManager.persist(oldPerson);
 
-		Person savePerson = entityManager.find(Person.class, person.getId());
+		OldPerson saveOldPerson = entityManager.find(OldPerson.class, oldPerson.getId());
 		Team saveTeam = entityManager.find(Team.class, team.getId());
 
-		System.out.println(savePerson.toString());
+		System.out.println(saveOldPerson.toString());
 		System.out.println(saveTeam.toString());
 		saveTeam.getPersonList()
-			.forEach(person1 -> System.out.println(person1.toString()));
+			.forEach(oldPerson1 -> System.out.println(oldPerson1.toString()));
 
 		transaction.commit();
 	}
@@ -225,31 +224,31 @@ public class RelationMappingExample implements Runnable {
 	 */
 	private void saveMemberWthTeamChange(EntityManager entityManager) {
 		System.out.println("양방향 매핑 요소 변경 테스트");
-		Person person = Person.of("tester");
+		OldPerson oldPerson = OldPerson.of("tester");
 		Team team = Team.of("test33");
 		Team changeTeam = Team.of("change");
 
-		person.setTeam(team);
+		oldPerson.setTeam(team);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		entityManager.persist(team);
-		entityManager.persist(person);
+		entityManager.persist(oldPerson);
 		entityManager.persist(changeTeam);
 
-		person.setTeam(changeTeam);
+		oldPerson.setTeam(changeTeam);
 
-		Person savePerson = entityManager.find(Person.class, person.getId());
+		OldPerson saveOldPerson = entityManager.find(OldPerson.class, oldPerson.getId());
 		Team saveTeam = entityManager.find(Team.class, team.getId());
 		Team saveChangeTeam = entityManager.find(Team.class, changeTeam.getId());
 
-		System.out.println(savePerson.toString());
+		System.out.println(saveOldPerson.toString());
 		System.out.println(saveTeam.toString());
 		saveTeam.getPersonList()
-			.forEach(person1 -> System.out.println(person1.toString()));
+			.forEach(oldPerson1 -> System.out.println(oldPerson1.toString()));
 		System.out.println(saveChangeTeam.toString());
 		saveChangeTeam.getPersonList()
-			.forEach(person1 -> System.out.println(person1.toString()));
+			.forEach(oldPerson1 -> System.out.println(oldPerson1.toString()));
 
 		transaction.commit();
 	}

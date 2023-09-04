@@ -5,8 +5,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "PERSON")
-public class Person {
+@Table(name = "OLD_PERSON")
+public class OldPerson {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "PERSON_ID")
@@ -50,8 +50,8 @@ public class Person {
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		Person person = (Person)o;
-		return Objects.equals(id, person.id) && Objects.equals(name, person.name) && Objects.equals(team, person.team);
+		OldPerson oldPerson = (OldPerson)o;
+		return Objects.equals(id, oldPerson.id) && Objects.equals(name, oldPerson.name) && Objects.equals(team, oldPerson.team);
 	}
 
 	@Override
@@ -68,15 +68,15 @@ public class Person {
 			'}';
 	}
 
-	protected Person() {
+	protected OldPerson() {
 
 	}
 
-	private Person(String name) {
+	private OldPerson(String name) {
 		this.name = name;
 	}
 
-	public static Person of(String name) {
-		return new Person(name);
+	public static OldPerson of(String name) {
+		return new OldPerson(name);
 	}
 }
