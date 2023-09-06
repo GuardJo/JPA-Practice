@@ -2,7 +2,9 @@ package com.example.jpa.source.domain;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -28,6 +30,9 @@ public class Order {
 	@ManyToOne
 	@JoinColumn(name = "MEMBER_ID")
 	private Member member;
+
+	@OneToMany(mappedBy = "order")
+	private final List<OrderItem> orderItems = new ArrayList<>();
 
 	protected Order() {
 
@@ -67,7 +72,21 @@ public class Order {
 	}
 
 	public void setMember(Member member) {
+		if (this.member != null) {
+			// 기존 관계 제거
+			this.member.getOrders().remove(this);
+		}
+
+		if (member != null) {
+			// 반대편에도 관계에 대한 참조 데이터 추가
+			member.getOrders().add(this);
+		}
+
 		this.member = member;
+	}
+
+	public List<OrderItem> getOrderItems() {
+		return orderItems;
 	}
 
 	@Override

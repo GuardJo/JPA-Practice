@@ -77,6 +77,16 @@ public class OrderItem {
 	}
 
 	public void setItem(Item item) {
+		if (this.item != null) {
+			// 기존 관계 제거
+			this.item.getOrderItems().remove(this);
+		}
+
+		if (item != null) {
+			// 반대편에도 관계에 대한 참조 데이터 추가
+			item.getOrderItems().add(this);
+		}
+
 		this.item = item;
 	}
 
@@ -85,6 +95,16 @@ public class OrderItem {
 	}
 
 	public void setOrder(Order order) {
+		if (this.order != null) {
+			// 기존 관계 제거
+			this.order.getOrderItems().remove(this);
+		}
+
+		if (order != null) {
+			// 반대편에도 관계에 대한 참조 데이터 추가
+			order.getOrderItems().add(this);
+		}
+
 		this.order = order;
 	}
 

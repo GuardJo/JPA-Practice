@@ -22,6 +22,7 @@ public class EntityService implements Runnable {
 		System.out.println("실습 예제 테스트");
 		createEntities();
 		traverseEntityObjects();
+		traverseEntityObjectsWithTwinRelation();
 	}
 
 	private void createEntities() {
@@ -50,7 +51,7 @@ public class EntityService implements Runnable {
 	}
 
 	private void traverseEntityObjects() {
-		System.out.println("관계 구성이 없는 상태에서의 객체 그래프 탐색");
+		System.out.println("객체 그래프 탐색");
 		OrderItem orderItem = entityManager.find(OrderItem.class, 1L);
 		Item item = orderItem.getItem();
 		Order order = orderItem.getOrder();
@@ -60,5 +61,19 @@ public class EntityService implements Runnable {
 		System.out.println(item.toString());
 		System.out.println(order.toString());
 		System.out.println(member.toString());
+	}
+
+	private void traverseEntityObjectsWithTwinRelation() {
+		System.out.println("양방향 객체 그래프 탐색");
+
+		Member member = entityManager.find(Member.class, 1L);
+
+		for (Order order : member.getOrders()) {
+			System.out.println(order.toString());
+
+			for (OrderItem orderItem : order.getOrderItems()) {
+				System.out.println(orderItem);
+			}
+		}
 	}
 }

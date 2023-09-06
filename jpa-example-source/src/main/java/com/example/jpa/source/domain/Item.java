@@ -2,6 +2,8 @@ package com.example.jpa.source.domain;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -21,6 +23,9 @@ public class Item {
 	private int price;
 	@Column(nullable = false)
 	private int stockQuantity;
+
+	@OneToMany(mappedBy = "item")
+	private final List<OrderItem> orderItems = new ArrayList<>();
 
 	protected Item() {
 	}
@@ -61,6 +66,10 @@ public class Item {
 
 	public void setStockQuantity(int stockQuantity) {
 		this.stockQuantity = stockQuantity;
+	}
+
+	public List<OrderItem> getOrderItems() {
+		return orderItems;
 	}
 
 	@Override

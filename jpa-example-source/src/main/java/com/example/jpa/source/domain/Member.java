@@ -2,7 +2,9 @@ package com.example.jpa.source.domain;
 
 import javax.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,6 +25,9 @@ public class Member {
 	@Column(nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Date registedDate;
+
+	@OneToMany(mappedBy = "member")
+	private final List<Order> orders = new ArrayList<>();
 
 	protected Member() {
 
@@ -64,6 +69,10 @@ public class Member {
 
 	public void setRegistedDate(Date registedDate) {
 		this.registedDate = registedDate;
+	}
+
+	public List<Order> getOrders() {
+		return orders;
 	}
 
 	@Override
