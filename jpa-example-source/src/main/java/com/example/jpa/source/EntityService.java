@@ -20,10 +20,11 @@ public class EntityService implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("실습 예제 테스트");
-		createEntities(this.entityManager);
+		createEntities();
+		traverseEntityObjects();
 	}
 
-	private void createEntities(EntityManager entityManager) {
+	private void createEntities() {
 		System.out.println("테스트 데이터 생성 및 저장");
 		Member member = Member.of("tester", "seoul");
 		Item item = Item.of("testItem", 1000, 1);
@@ -46,5 +47,18 @@ public class EntityService implements Runnable {
 		entityManager.persist(orderItem);
 
 		transaction.commit();
+	}
+
+	private void traverseEntityObjects() {
+		System.out.println("관계 구성이 없는 상태에서의 객체 그래프 탐색");
+		OrderItem orderItem = entityManager.find(OrderItem.class, 1L);
+		Item item = entityManager.find(Item.class, orderItem.getItemId());
+		Order order = entityManager.find(Order.class, orderItem.getOrderId());
+		Member member = entityManager.find(Member.class, order.getMemberId());
+
+		System.out.println(orderItem.toString());
+		System.out.println(item.toString());
+		System.out.println(order.toString());
+		System.out.println(member.toString());
 	}
 }
