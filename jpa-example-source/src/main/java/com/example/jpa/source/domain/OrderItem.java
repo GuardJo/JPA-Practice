@@ -23,10 +23,12 @@ public class OrderItem {
 	private int price;
 	@Column(nullable = false)
 	private int count = 0;
-	@Column(name = "ITEM_ID")
-	private Long itemId;
-	@Column(name = "ORDER_ID")
-	private Long orderId;
+	@ManyToOne
+	@JoinColumn(name = "ITEM_ID")
+	private Item item;
+	@ManyToOne
+	@JoinColumn(name = "ORDER_ID")
+	private Order order;
 
 	protected OrderItem() {
 
@@ -70,20 +72,20 @@ public class OrderItem {
 		this.count = count;
 	}
 
-	public Long getItemId() {
-		return itemId;
+	public Item getItem() {
+		return item;
 	}
 
-	public void setItemId(Long itemId) {
-		this.itemId = itemId;
+	public void setItem(Item item) {
+		this.item = item;
 	}
 
-	public Long getOrderId() {
-		return orderId;
+	public Order getOrder() {
+		return order;
 	}
 
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
 	@Override
@@ -93,13 +95,13 @@ public class OrderItem {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		OrderItem orderItem = (OrderItem)o;
-		return price == orderItem.price && count == orderItem.count && Objects.equals(id, orderItem.id) && Objects.equals(name, orderItem.name)
-			&& Objects.equals(itemId, orderItem.itemId) && Objects.equals(orderId, orderItem.orderId);
+		return price == orderItem.price && count == orderItem.count && Objects.equals(id, orderItem.id) && Objects.equals(name,
+			orderItem.name) && Objects.equals(item, orderItem.item) && Objects.equals(order, orderItem.order);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, name, price, count, itemId, orderId);
+		return Objects.hash(id, name, price, count, item, order);
 	}
 
 	@Override
@@ -109,8 +111,8 @@ public class OrderItem {
 			", name='" + name + '\'' +
 			", price=" + price +
 			", count=" + count +
-			", itemId=" + itemId +
-			", orderId=" + orderId +
+			", itemId=" + item.getId() +
+			", orderId=" + order.getId() +
 			'}';
 	}
 }

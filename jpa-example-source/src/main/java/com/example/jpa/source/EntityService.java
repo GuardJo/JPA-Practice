@@ -39,11 +39,11 @@ public class EntityService implements Runnable {
 		entityManager.persist(member);
 		entityManager.persist(item);
 
-		order.setMemberId(member.getId());
+		order.setMember(member);
 		entityManager.persist(order);
 
-		orderItem.setOrderId(order.getId());
-		orderItem.setItemId(item.getId());
+		orderItem.setOrder(order);
+		orderItem.setItem(item);
 		entityManager.persist(orderItem);
 
 		transaction.commit();
@@ -52,9 +52,9 @@ public class EntityService implements Runnable {
 	private void traverseEntityObjects() {
 		System.out.println("관계 구성이 없는 상태에서의 객체 그래프 탐색");
 		OrderItem orderItem = entityManager.find(OrderItem.class, 1L);
-		Item item = entityManager.find(Item.class, orderItem.getItemId());
-		Order order = entityManager.find(Order.class, orderItem.getOrderId());
-		Member member = entityManager.find(Member.class, order.getMemberId());
+		Item item = orderItem.getItem();
+		Order order = orderItem.getOrder();
+		Member member = order.getMember();
 
 		System.out.println(orderItem.toString());
 		System.out.println(item.toString());

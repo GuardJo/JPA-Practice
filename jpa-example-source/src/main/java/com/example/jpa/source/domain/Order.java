@@ -25,8 +25,9 @@ public class Order {
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus status;
-	@Column(name = "MEMBER_ID")
-	private Long memberId;
+	@ManyToOne
+	@JoinColumn(name = "MEMBER_ID")
+	private Member member;
 
 	protected Order() {
 
@@ -61,12 +62,12 @@ public class Order {
 		this.status = status;
 	}
 
-	public Long getMemberId() {
-		return memberId;
+	public Member getMember() {
+		return member;
 	}
 
-	public void setMemberId(Long memberId) {
-		this.memberId = memberId;
+	public void setMember(Member member) {
+		this.member = member;
 	}
 
 	@Override
@@ -76,13 +77,13 @@ public class Order {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		Order order = (Order)o;
-		return Objects.equals(id, order.id) && Objects.equals(orderDate, order.orderDate) && status == order.status && Objects.equals(memberId,
-			order.memberId);
+		return Objects.equals(id, order.id) && Objects.equals(orderDate, order.orderDate) && status == order.status
+			&& Objects.equals(member, order.member);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, orderDate, status, memberId);
+		return Objects.hash(id, orderDate, status, member);
 	}
 
 	@Override
@@ -91,7 +92,7 @@ public class Order {
 			"id=" + id +
 			", orderDate=" + orderDate +
 			", status=" + status +
-			", memberId=" + memberId +
+			", memberId=" + member.getId() +
 			'}';
 	}
 }
