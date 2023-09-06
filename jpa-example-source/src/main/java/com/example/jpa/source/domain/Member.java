@@ -1,6 +1,7 @@
 package com.example.jpa.source.domain;
 
 import javax.persistence.*;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -11,79 +12,83 @@ import java.util.Objects;
 @Entity
 @Table(name = "MEMBER")
 public class Member {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "MEMBER_ID")
-    private Long id;
-    @Column(nullable = false)
-    private String name;
-    @Column(length = 500)
-    private String address;
-    @Column(nullable = false)
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date registedDate;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "MEMBER_ID")
+	private Long id;
+	@Column(nullable = false)
+	private String name;
+	@Column(length = 500)
+	private String address;
+	@Column(nullable = false)
+	@Temporal(value = TemporalType.TIMESTAMP)
+	private Date registedDate;
 
-    protected Member() {
+	protected Member() {
 
-    }
-    private Member(String name, String address, Date registedDate) {
-        this.name = name;
-        this.address = address;
-        this.registedDate = registedDate;
-    }
+	}
 
-    public static Member of(String name, String address) {
-        return new Member(name, address, new Date());
-    }
+	private Member(String name, String address, Date registedDate) {
+		this.name = name;
+		this.address = address;
+		this.registedDate = registedDate;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public static Member of(String name, String address) {
+		return new Member(name, address, new Date());
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public Date getRegistedDate() {
-        return registedDate;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    public void setRegistedDate(Date registedDate) {
-        this.registedDate = registedDate;
-    }
+	public Date getRegistedDate() {
+		return registedDate;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Member member = (Member) o;
-        return Objects.equals(id, member.id) && Objects.equals(name, member.name) && Objects.equals(address, member.address) && Objects.equals(registedDate, member.registedDate);
-    }
+	public void setRegistedDate(Date registedDate) {
+		this.registedDate = registedDate;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, address, registedDate);
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Member member = (Member)o;
+		return Objects.equals(id, member.id) && Objects.equals(name, member.name) && Objects.equals(address, member.address) && Objects.equals(
+			registedDate, member.registedDate);
+	}
 
-    @Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", registedDate=" + registedDate +
-                '}';
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, address, registedDate);
+	}
+
+	@Override
+	public String toString() {
+		return "Member{" +
+			"id=" + id +
+			", name='" + name + '\'' +
+			", address='" + address + '\'' +
+			", registedDate=" + registedDate +
+			'}';
+	}
 }

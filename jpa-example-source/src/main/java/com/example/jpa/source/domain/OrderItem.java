@@ -14,7 +14,7 @@ import java.util.Objects;
 @Table(name = "ORDER_ITEM")
 public class OrderItem {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ORDER_ITEM_ID")
 	private Long id;
 	@Column(nullable = false)
