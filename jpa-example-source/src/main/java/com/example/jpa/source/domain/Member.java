@@ -1,7 +1,10 @@
 package com.example.jpa.source.domain;
 
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,79 +14,90 @@ import java.util.Objects;
 @Entity
 @Table(name = "MEMBER")
 public class Member {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "MEMBER_ID")
-    private Long id;
-    @Column(nullable = false)
-    private String name;
-    @Column(length = 500)
-    private String address;
-    @Column(nullable = false)
-    @Temporal(value = TemporalType.TIMESTAMP)
-    private Date registedDate;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "MEMBER_ID")
+	private Long id;
+	@Column(nullable = false)
+	private String name;
+	@Column(length = 500)
+	private String address;
+	@Column(nullable = false)
+	@Temporal(value = TemporalType.TIMESTAMP)
+	private Date registedDate;
 
-    protected Member() {
+	@OneToMany(mappedBy = "member")
+	private final List<Order> orders = new ArrayList<>();
 
-    }
-    private Member(String name, String address, Date registedDate) {
-        this.name = name;
-        this.address = address;
-        this.registedDate = registedDate;
-    }
+	protected Member() {
 
-    public static Member of(String name, String address) {
-        return new Member(name, address, new Date());
-    }
+	}
 
-    public Long getId() {
-        return id;
-    }
+	private Member(String name, String address, Date registedDate) {
+		this.name = name;
+		this.address = address;
+		this.registedDate = registedDate;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public static Member of(String name, String address) {
+		return new Member(name, address, new Date());
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Date getRegistedDate() {
-        return registedDate;
-    }
+	public String getAddress() {
+		return address;
+	}
 
-    public void setRegistedDate(Date registedDate) {
-        this.registedDate = registedDate;
-    }
+	public void setAddress(String address) {
+		this.address = address;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Member member = (Member) o;
-        return Objects.equals(id, member.id) && Objects.equals(name, member.name) && Objects.equals(address, member.address) && Objects.equals(registedDate, member.registedDate);
-    }
+	public Date getRegistedDate() {
+		return registedDate;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, address, registedDate);
-    }
+	public void setRegistedDate(Date registedDate) {
+		this.registedDate = registedDate;
+	}
 
-    @Override
-    public String toString() {
-        return "Member{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", registedDate=" + registedDate +
-                '}';
-    }
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		Member member = (Member)o;
+		return Objects.equals(id, member.id) && Objects.equals(name, member.name) && Objects.equals(address, member.address) && Objects.equals(
+			registedDate, member.registedDate);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, address, registedDate);
+	}
+
+	@Override
+	public String toString() {
+		return "Member{" +
+			"id=" + id +
+			", name='" + name + '\'' +
+			", address='" + address + '\'' +
+			", registedDate=" + registedDate +
+			'}';
+	}
 }
