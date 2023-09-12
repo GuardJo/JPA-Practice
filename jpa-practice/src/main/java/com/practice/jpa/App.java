@@ -9,6 +9,7 @@ import com.practice.jpa.chapter03.EntityLifecycleExample;
 import com.practice.jpa.chapter03.MergeExample;
 import com.practice.jpa.chapter04.IdGenerationExample;
 import com.practice.jpa.chapter05.RelationMappingExample;
+import com.practice.jpa.chapter06.RelationshipMappingExample;
 import com.practice.jpa.chapter07.MultiIdExample;
 
 /**
@@ -26,6 +27,7 @@ public class App {
 		MergeExample mergeExample = new MergeExample(entityManagerFactory);
 		IdGenerationExample idGenerationExample = new IdGenerationExample(entityManagerFactory);
 		RelationMappingExample relationMappingExample = new RelationMappingExample(entityManagerFactory);
+		RelationshipMappingExample relationshipMappingExample = new RelationshipMappingExample(entityManagerFactory);
 		MultiIdExample multiIdExample = new MultiIdExample(entityManagerFactory);
 
 		//        jpaExample.run();
@@ -33,8 +35,9 @@ public class App {
 		//        dirtyCheckingExample.run();
 		//        mergeExample.run();
 		//        idGenerationExample.run();
-		relationMappingExample.run();
-		multiIdExample.run();
+		// relationMappingExample.run();
+		relationshipMappingExample.run();
+		// multiIdExample.run();
 
 		entityManagerFactory.close();
 	}
