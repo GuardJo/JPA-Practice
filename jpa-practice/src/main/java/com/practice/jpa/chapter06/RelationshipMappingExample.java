@@ -5,7 +5,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import com.practice.jpa.chapter06.data.Member6;
+import com.practice.jpa.chapter06.data.Member6_2;
 import com.practice.jpa.chapter06.data.Team6;
+import com.practice.jpa.chapter06.data.Team6_2;
 
 public class RelationshipMappingExample implements Runnable {
 	private final EntityManager entityManager;
@@ -17,12 +19,15 @@ public class RelationshipMappingExample implements Runnable {
 	@Override
 	public void run() {
 		System.out.println("다양한 연관관계 매핑 테스트");
-		saveEntities();
-		traverseEntities();
+		saveEntitiesNtoOne();
+		traverseEntitiesNtoOne();
+
+		saveEntitiesOneToN();
+		traverseEntitiesOneToN();
 	}
 
-	private void saveEntities() {
-		System.out.println("Meber 및 Team 객체 저장");
+	private void saveEntitiesNtoOne() {
+		System.out.println("[다대일] Meber 및 Team 객체 저장");
 
 		Team6 team = new Team6("testTeam");
 		Member6 member = new Member6("testMember");
@@ -37,8 +42,24 @@ public class RelationshipMappingExample implements Runnable {
 		transaction.commit();
 	}
 
-	private void traverseEntities() {
-		System.out.println("Member 및 Team 객체 그래프 탐색");
+	private void saveEntitiesOneToN() {
+		System.out.println("[일대다] Meber 및 Team 객체 저장");
+
+		Member6_2 member = new Member6_2("testMember");
+		Team6_2 team = new Team6_2("testTeam");
+		team.getMembers().add(member);
+
+		EntityTransaction transaction = entityManager.getTransaction();
+
+		transaction.begin();
+		entityManager.persist(team);
+		entityManager.persist(member);
+
+		transaction.commit();
+	}
+
+	private void traverseEntitiesNtoOne() {
+		System.out.println("[다대일] Member 및 Team 객체 그래프 탐색");
 
 		long memberId = 1L;
 
@@ -50,5 +71,17 @@ public class RelationshipMappingExample implements Runnable {
 
 		System.out.println("Members in Team");
 		team.getMembers().forEach(item -> System.out.println(item.toString()));
+	}
+
+	private void traverseEntitiesOneToN() {
+		System.out.println("[일대다] Member 및 Team 객체 그래프 탐색");
+
+		long memberId = 1L;
+
+		Member6 member = entityManager.find(Member6.class, memberId);
+		Team6 team = member.getTeam();
+
+		System.out.println(member.toString());
+		System.out.println(team.toString());
 	}
 }
