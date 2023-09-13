@@ -33,6 +33,14 @@ public class Member6 {
 	}
 
 	public void setTeam(Team6 team) {
+		if (this.team != null) {
+			this.team.getMembers().remove(this);
+		}
+		
+		if (team != null) {
+			team.getMembers().add(this);
+		}
+
 		this.team = team;
 	}
 

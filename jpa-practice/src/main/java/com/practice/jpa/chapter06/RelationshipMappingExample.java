@@ -47,5 +47,8 @@ public class RelationshipMappingExample implements Runnable {
 
 		System.out.println(member.toString());
 		System.out.println(team.toString());
+
+		System.out.println("Members in Team");
+		team.getMembers().forEach(item -> System.out.println(item.toString()));
 	}
 }
