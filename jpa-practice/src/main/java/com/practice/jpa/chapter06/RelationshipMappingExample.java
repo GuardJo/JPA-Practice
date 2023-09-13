@@ -4,8 +4,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
+import com.practice.jpa.chapter06.data.Locker;
 import com.practice.jpa.chapter06.data.Member6;
 import com.practice.jpa.chapter06.data.Member6_2;
+import com.practice.jpa.chapter06.data.Member6_3;
 import com.practice.jpa.chapter06.data.Team6;
 import com.practice.jpa.chapter06.data.Team6_2;
 
@@ -24,6 +26,9 @@ public class RelationshipMappingExample implements Runnable {
 
 		saveEntitiesOneToN();
 		traverseEntitiesOneToN();
+
+		saveEntitiesOneToOneWithOwner();
+		traverseEntitiesOnetoOne();
 	}
 
 	private void saveEntitiesNtoOne() {
@@ -58,6 +63,21 @@ public class RelationshipMappingExample implements Runnable {
 		transaction.commit();
 	}
 
+	private void saveEntitiesOneToOneWithOwner() {
+		System.out.println("[일대일] Member 및 Locker 객체 저장");
+
+		Member6_3 member = new Member6_3("testMember");
+		Locker locker = new Locker("testLocker");
+		member.setLocker(locker);
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.persist(locker);
+		entityManager.persist(member);
+
+		transaction.commit();
+	}
+
 	private void traverseEntitiesNtoOne() {
 		System.out.println("[다대일] Member 및 Team 객체 그래프 탐색");
 
@@ -83,5 +103,18 @@ public class RelationshipMappingExample implements Runnable {
 
 		System.out.println(member.toString());
 		System.out.println(team.toString());
+	}
+
+	private void traverseEntitiesOnetoOne() {
+		System.out.println("[일대일] Member 및 Locker 객체 그래프 탐색");
+
+		long memberId = 1L;
+
+		Member6_3 member = entityManager.find(Member6_3.class, memberId);
+		Locker locker = member.getLocker();
+
+		System.out.println(member);
+		System.out.println(locker);
+		System.out.println(locker.getMember());
 	}
 }
