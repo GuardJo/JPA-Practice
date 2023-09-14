@@ -68,7 +68,8 @@ public class RelationshipMappingExample implements Runnable {
 
 		Member6_3 member = new Member6_3("testMember");
 		Locker locker = new Locker("testLocker");
-		member.setLocker(locker);
+
+		locker.setMember(member);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();

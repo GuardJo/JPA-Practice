@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -14,7 +15,8 @@ public class Locker {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String lockerName;
-	@OneToOne(mappedBy = "locker")
+	@OneToOne
+	@JoinColumn(name = "MEMBER_ID")
 	private Member6_3 member;
 
 	protected Locker() {
@@ -29,7 +31,15 @@ public class Locker {
 		this.lockerName = lockerName;
 	}
 
-	protected void setMember(Member6_3 member) {
+	public void setMember(Member6_3 member) {
+		if (this.member != null) {
+			this.member.setLocker(null);
+		}
+
+		if (member != null) {
+			member.setLocker(this);
+		}
+
 		this.member = member;
 	}
 
