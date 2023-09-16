@@ -1,6 +1,7 @@
 package com.practice.jpa.chapter06.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -49,7 +50,21 @@ public class Member6_4 {
 	}
 
 	public List<Product> getProducts() {
-		return products;
+		return Collections.unmodifiableList(this.products);
+	}
+
+	public void addProduct(Product product) {
+		if (this.products.contains(product)) {
+			return;
+		}
+
+		product.addMember(this);
+		this.products.add(product);
+	}
+
+	public void removeProduct(Product product) {
+		product.removeMember(this);
+		this.products.remove(product);
 	}
 
 	@Override

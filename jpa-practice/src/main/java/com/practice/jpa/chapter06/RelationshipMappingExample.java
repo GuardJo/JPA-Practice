@@ -91,7 +91,7 @@ public class RelationshipMappingExample implements Runnable {
 		Member6_4 member = new Member6_4("testMember");
 		Product product = new Product("testProduct");
 
-		member.getProducts().add(product);
+		member.addProduct(product);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
@@ -149,6 +149,9 @@ public class RelationshipMappingExample implements Runnable {
 		List<Product> products = member.getProducts();
 
 		System.out.println(member);
-		products.forEach(System.out::println);
+		products.forEach(product -> {
+			System.out.println(product);
+			product.getMembers().forEach(System.out::println);
+		});
 	}
 }
