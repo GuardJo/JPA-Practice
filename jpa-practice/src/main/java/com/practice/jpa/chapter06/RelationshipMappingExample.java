@@ -1,5 +1,7 @@
 package com.practice.jpa.chapter06;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -8,6 +10,8 @@ import com.practice.jpa.chapter06.data.Locker;
 import com.practice.jpa.chapter06.data.Member6;
 import com.practice.jpa.chapter06.data.Member6_2;
 import com.practice.jpa.chapter06.data.Member6_3;
+import com.practice.jpa.chapter06.data.Member6_4;
+import com.practice.jpa.chapter06.data.Product;
 import com.practice.jpa.chapter06.data.Team6;
 import com.practice.jpa.chapter06.data.Team6_2;
 
@@ -29,6 +33,9 @@ public class RelationshipMappingExample implements Runnable {
 
 		saveEntitiesOneToOneWithOwner();
 		traverseEntitiesOnetoOne();
+
+		saveEntitiesNtoN();
+		traverseEntitiesNtoN();
 	}
 
 	private void saveEntitiesNtoOne() {
@@ -79,6 +86,20 @@ public class RelationshipMappingExample implements Runnable {
 		transaction.commit();
 	}
 
+	private void saveEntitiesNtoN() {
+		System.out.println("[다대다] Member 및 Product 객체 저장");
+		Member6_4 member = new Member6_4("testMember");
+		Product product = new Product("testProduct");
+
+		member.getProducts().add(product);
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.persist(product);
+		entityManager.persist(member);
+		transaction.commit();
+	}
+
 	private void traverseEntitiesNtoOne() {
 		System.out.println("[다대일] Member 및 Team 객체 그래프 탐색");
 
@@ -117,5 +138,17 @@ public class RelationshipMappingExample implements Runnable {
 		System.out.println(member);
 		System.out.println(locker);
 		System.out.println(locker.getMember());
+	}
+
+	private void traverseEntitiesNtoN() {
+		System.out.println("[다대다] Member 및 Product 객체 그래프 탐색");
+
+		long memberId = 1L;
+
+		Member6_4 member = entityManager.find(Member6_4.class, memberId);
+		List<Product> products = member.getProducts();
+
+		System.out.println(member);
+		products.forEach(System.out::println);
 	}
 }
