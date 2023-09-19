@@ -11,7 +11,11 @@ import com.practice.jpa.chapter06.data.Member6;
 import com.practice.jpa.chapter06.data.Member6_2;
 import com.practice.jpa.chapter06.data.Member6_3;
 import com.practice.jpa.chapter06.data.Member6_4;
+import com.practice.jpa.chapter06.data.Member6_5;
+import com.practice.jpa.chapter06.data.MemberProduct;
+import com.practice.jpa.chapter06.data.MemberProductId;
 import com.practice.jpa.chapter06.data.Product;
+import com.practice.jpa.chapter06.data.Product6_2;
 import com.practice.jpa.chapter06.data.Team6;
 import com.practice.jpa.chapter06.data.Team6_2;
 
@@ -36,6 +40,9 @@ public class RelationshipMappingExample implements Runnable {
 
 		saveEntitiesNtoN();
 		traverseEntitiesNtoN();
+
+		saveEntitiesNtoNWithJoinEntity();
+		traverseEntitesNtoNWithJoinEntity();
 	}
 
 	private void saveEntitiesNtoOne() {
@@ -100,6 +107,21 @@ public class RelationshipMappingExample implements Runnable {
 		transaction.commit();
 	}
 
+	private void saveEntitiesNtoNWithJoinEntity() {
+		System.out.println("[다대다] Member, Product 및 MemberProduct 객체 저장");
+		Member6_5 member = new Member6_5("testMember");
+		Product6_2 product = new Product6_2("testProduct");
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.persist(member);
+		entityManager.persist(product);
+
+		MemberProduct memberProduct = new MemberProduct(member, product);
+		entityManager.persist(memberProduct);
+		transaction.commit();
+	}
+
 	private void traverseEntitiesNtoOne() {
 		System.out.println("[다대일] Member 및 Team 객체 그래프 탐색");
 
@@ -153,5 +175,20 @@ public class RelationshipMappingExample implements Runnable {
 			System.out.println(product);
 			product.getMembers().forEach(System.out::println);
 		});
+	}
+
+	private void traverseEntitesNtoNWithJoinEntity() {
+		System.out.println("[다대다] Member, Product 및 MemberProduct 객체 그래프 탐색");
+		long memberId = 1L;
+		long productId = 1L;
+
+		MemberProductId memberProductId = new MemberProductId();
+		memberProductId.setMember(memberId);
+		memberProductId.setProduct(productId);
+
+		MemberProduct memberProduct = entityManager.find(MemberProduct.class, memberProductId);
+
+		System.out.println(memberProduct.getMember());
+		System.out.println(memberProduct.getProduct());
 	}
 }
