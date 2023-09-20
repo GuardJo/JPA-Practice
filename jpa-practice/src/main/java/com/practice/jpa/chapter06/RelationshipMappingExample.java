@@ -13,7 +13,6 @@ import com.practice.jpa.chapter06.data.Member6_3;
 import com.practice.jpa.chapter06.data.Member6_4;
 import com.practice.jpa.chapter06.data.Member6_5;
 import com.practice.jpa.chapter06.data.MemberProduct;
-import com.practice.jpa.chapter06.data.MemberProductId;
 import com.practice.jpa.chapter06.data.Product;
 import com.practice.jpa.chapter06.data.Product6_2;
 import com.practice.jpa.chapter06.data.Team6;
@@ -179,12 +178,7 @@ public class RelationshipMappingExample implements Runnable {
 
 	private void traverseEntitesNtoNWithJoinEntity() {
 		System.out.println("[다대다] Member, Product 및 MemberProduct 객체 그래프 탐색");
-		long memberId = 1L;
-		long productId = 1L;
-
-		MemberProductId memberProductId = new MemberProductId();
-		memberProductId.setMember(memberId);
-		memberProductId.setProduct(productId);
+		long memberProductId = 1L;
 
 		MemberProduct memberProduct = entityManager.find(MemberProduct.class, memberProductId);
 
