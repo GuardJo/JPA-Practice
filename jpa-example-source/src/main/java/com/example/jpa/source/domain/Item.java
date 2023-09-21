@@ -1,10 +1,19 @@
 package com.example.jpa.source.domain;
 
-import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * 상품 도메인
@@ -26,6 +35,14 @@ public class Item {
 
 	@OneToMany(mappedBy = "item")
 	private final List<OrderItem> orderItems = new ArrayList<>();
+
+	@ManyToMany
+	@JoinTable(
+		name = "CATEGORY_ITEM",
+		joinColumns = @JoinColumn(name = "ITEM_ID"),
+		inverseJoinColumns = @JoinColumn(name = "CATEGORY_ID")
+	)
+	private final List<Category> categories = new ArrayList<>();
 
 	protected Item() {
 	}
@@ -70,6 +87,10 @@ public class Item {
 
 	public List<OrderItem> getOrderItems() {
 		return orderItems;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
 	}
 
 	@Override
