@@ -34,6 +34,13 @@
 - ADDRESS : 회원 주소
 - REGISTED_DATE : 가입 일시
 
+### DELIVERY
+
+- CITY : 거주 도시
+- STREET : 도로명 주소
+- ZIPCODE : 우편 번호
+- STATUS : 배송 상태
+
 ### ORDER
 
 - ORDER_DATE : 주문 일시
@@ -53,3 +60,13 @@
 - NAME : 상품명
 - PRICE : 상품 가격
 - STOKC_QUANTITY : 재고량
+
+### CATEGORY
+
+- NAME : 카테고리명
+- PARENT_ID : 상위 카테고리에 대한 외래키
+
+### CATEGORY_ITEM
+
+- CATEGORY_ID : CATEGORY 테이블에 대한 외래키
+- ITEM_ID : ITEM 테이블에 대한 외래키

@@ -4,6 +4,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
+import com.example.jpa.source.domain.Category;
+import com.example.jpa.source.domain.Delivery;
 import com.example.jpa.source.domain.Item;
 import com.example.jpa.source.domain.Member;
 import com.example.jpa.source.domain.Order;
@@ -27,8 +29,10 @@ public class EntityService implements Runnable {
 
 	private void createEntities() {
 		System.out.println("테스트 데이터 생성 및 저장");
+		Category category = Category.of("Basic Category");
 		Member member = Member.of("tester", "seoul");
 		Item item = Item.of("testItem", 1000, 1);
+		Delivery delivery = Delivery.of("city", "street", 100);
 
 		Order order = Order.of(OrderStatus.ORDER);
 		OrderItem orderItem = OrderItem.of("testOrderItem", 10000);
@@ -37,10 +41,14 @@ public class EntityService implements Runnable {
 
 		transaction.begin();
 
+		entityManager.persist(category);
 		entityManager.persist(member);
 		entityManager.persist(item);
+		item.getCategories().add(category);
+		entityManager.persist(delivery);
 
 		order.setMember(member);
+		order.setDelivery(delivery);
 		entityManager.persist(order);
 
 		orderItem.setOrder(order);
@@ -56,11 +64,15 @@ public class EntityService implements Runnable {
 		Item item = orderItem.getItem();
 		Order order = orderItem.getOrder();
 		Member member = order.getMember();
+		Delivery delivery = order.getDelivery();
 
-		System.out.println(orderItem.toString());
-		System.out.println(item.toString());
-		System.out.println(order.toString());
-		System.out.println(member.toString());
+		System.out.println(orderItem);
+		System.out.println(item);
+		System.out.println(order);
+		System.out.println(member);
+		System.out.println(delivery);
+
+		item.getCategories().forEach(System.out::println);
 	}
 
 	private void traverseEntityObjectsWithTwinRelation() {
