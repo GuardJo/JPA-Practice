@@ -1,8 +1,16 @@
 package com.example.jpa.source.domain;
 
-import javax.persistence.*;
-
+import java.time.LocalDateTime;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * 주문 상품 도메인
@@ -12,7 +20,7 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "ORDER_ITEM")
-public class OrderItem {
+public class OrderItem extends MetaData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ORDER_ITEM_ID")
@@ -38,6 +46,8 @@ public class OrderItem {
 		this.name = name;
 		this.price = price;
 		this.count++;
+		this.createdDate = LocalDateTime.now();
+		this.modifiedDate = LocalDateTime.now();
 	}
 
 	public static OrderItem of(String name, int price) {
@@ -133,6 +143,8 @@ public class OrderItem {
 			", count=" + count +
 			", itemId=" + item.getId() +
 			", orderId=" + order.getId() +
+			", createdDate=" + createdDate +
+			", modifiedDate=" + modifiedDate +
 			'}';
 	}
 }

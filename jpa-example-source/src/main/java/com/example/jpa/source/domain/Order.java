@@ -1,5 +1,6 @@
 package com.example.jpa.source.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "ORDERS")
-public class Order {
+public class Order extends MetaData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ORDER_ID")
@@ -57,6 +58,8 @@ public class Order {
 	protected Order(OrderStatus status) {
 		this.status = status;
 		this.orderDate = new Date();
+		this.createdDate = LocalDateTime.now();
+		this.modifiedDate = LocalDateTime.now();
 	}
 
 	public static Order of(OrderStatus status) {
@@ -136,6 +139,9 @@ public class Order {
 			", orderDate=" + orderDate +
 			", status=" + status +
 			", memberId=" + member.getId() +
+			", deliveryId=" + delivery.getId() +
+			", createdDate=" + createdDate +
+			", modifiedDate=" + modifiedDate +
 			'}';
 	}
 }
