@@ -1,5 +1,7 @@
 package com.example.jpa.source.domain;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "CATEGORY")
-public class Category {
+public class Category extends MetaData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "CATEGORY_ID")
@@ -27,6 +29,8 @@ public class Category {
 
 	private Category(String name) {
 		this.name = name;
+		this.createdDate = LocalDateTime.now();
+		this.modifiedDate = LocalDateTime.now();
 	}
 
 	public static Category of(String name) {
@@ -59,6 +63,8 @@ public class Category {
 			"id=" + id +
 			", name='" + name + '\'' +
 			", parent=" + parent +
+			", createdDate=" + createdDate +
+			", modifiedDate=" + modifiedDate +
 			'}';
 	}
 }

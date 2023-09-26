@@ -1,5 +1,7 @@
 package com.example.jpa.source.domain;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -11,7 +13,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "DELIVERY")
-public class Delivery {
+public class Delivery extends MetaData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "DELIVERY_ID")
@@ -33,6 +35,8 @@ public class Delivery {
 		this.city = city;
 		this.street = street;
 		this.zipCode = zipCode;
+		this.createdDate = LocalDateTime.now();
+		this.modifiedDate = LocalDateTime.now();
 	}
 
 	public static Delivery of(String city, String street, int zipCode) {
@@ -83,6 +87,8 @@ public class Delivery {
 			", street='" + street + '\'' +
 			", zipCode=" + zipCode +
 			", status=" + status +
+			", createdDate=" + createdDate +
+			", modifiedDate=" + modifiedDate +
 			'}';
 	}
 }

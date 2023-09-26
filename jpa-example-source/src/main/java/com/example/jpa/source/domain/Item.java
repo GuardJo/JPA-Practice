@@ -1,14 +1,18 @@
 package com.example.jpa.source.domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -21,17 +25,19 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "ITEM")
-public class Item {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "DTYPE")
+public abstract class Item extends MetaData {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ITEM_ID")
-	private Long id;
+	protected Long id;
 	@Column(nullable = false)
-	private String name;
+	protected String name;
 	@Column(nullable = false)
-	private int price;
+	protected int price;
 	@Column(nullable = false)
-	private int stockQuantity;
+	protected int stockQuantity;
 
 	@OneToMany(mappedBy = "item")
 	private final List<OrderItem> orderItems = new ArrayList<>();
@@ -47,14 +53,12 @@ public class Item {
 	protected Item() {
 	}
 
-	private Item(String name, int price, int stockQuantity) {
+	protected Item(String name, int price, int stockQuantity) {
 		this.name = name;
 		this.price = price;
 		this.stockQuantity = stockQuantity;
-	}
-
-	public static Item of(String name, int price, int stockQuantity) {
-		return new Item(name, price, stockQuantity);
+		this.createdDate = LocalDateTime.now();
+		this.modifiedDate = LocalDateTime.now();
 	}
 
 	public Long getId() {
@@ -115,6 +119,8 @@ public class Item {
 			", name='" + name + '\'' +
 			", price=" + price +
 			", stockQuantity=" + stockQuantity +
+			", createdDate=" + createdDate +
+			", modifiedDate=" + modifiedDate +
 			'}';
 	}
 }
