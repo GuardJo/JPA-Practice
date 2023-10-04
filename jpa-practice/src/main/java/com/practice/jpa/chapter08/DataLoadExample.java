@@ -20,6 +20,8 @@ public class DataLoadExample implements Runnable {
 
 		printMember();
 		printMemberAndTeam();
+		printMemberProxy();
+		printMemberAndTeamProxy();
 	}
 
 	private void initData() {
@@ -45,5 +47,24 @@ public class DataLoadExample implements Runnable {
 		Member8 member = entityManager.find(Member8.class, 1L);
 
 		System.out.println(member);
+	}
+
+	private void printMemberProxy() {
+		entityManager.clear();
+
+		Member8 member8 = entityManager.getReference(Member8.class, 1L);
+
+		System.out.println(member8);
+	}
+
+	private void printMemberAndTeamProxy() {
+		entityManager.clear();
+
+		Member8 member = entityManager.getReference(Member8.class, 1L);
+
+		System.out.println(member);
+
+		entityManager.clear(); // Persistence Context를 비움으로써 Member Entity를 준영속 상태로 전환
+		System.out.println(member.getTeam());
 	}
 }
