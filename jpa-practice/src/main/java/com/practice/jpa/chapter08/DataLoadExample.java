@@ -3,6 +3,7 @@ package com.practice.jpa.chapter08;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceUnitUtil;
 
 import com.practice.jpa.chapter08.domain.Member8;
 import com.practice.jpa.chapter08.domain.Team8;
@@ -95,8 +96,13 @@ public class DataLoadExample implements Runnable {
 		entityManager.clear();
 
 		Member8 member = entityManager.getReference(Member8.class, 1L);
+		PersistenceUnitUtil persistenceUnitUtil = entityManager.getEntityManagerFactory().getPersistenceUnitUtil();
+
+		boolean isLoaded = persistenceUnitUtil.isLoaded(member);
 
 		System.out.println(member.getId());
+		System.out.println("isLoaded = " + isLoaded);
+		System.out.println("Class Name = " + member.getClass().getName());
 	}
 
 	private void setNewRelationshipWithProxy() {
