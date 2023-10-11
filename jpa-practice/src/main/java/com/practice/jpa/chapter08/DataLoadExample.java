@@ -6,6 +6,8 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnitUtil;
 
 import com.practice.jpa.chapter08.domain.Member8;
+import com.practice.jpa.chapter08.domain.Order8;
+import com.practice.jpa.chapter08.domain.Product8;
 import com.practice.jpa.chapter08.domain.Team8;
 
 public class DataLoadExample implements Runnable {
@@ -27,6 +29,10 @@ public class DataLoadExample implements Runnable {
 
 		initNewTeamAndMember();
 		setNewRelationshipWithProxy();
+
+		initNewTeamAndMemberWithOrderAndProduct();
+		traverseMember();
+		traverseOrder();
 	}
 
 	private void initData() {
@@ -49,6 +55,24 @@ public class DataLoadExample implements Runnable {
 		transaction.begin();
 		entityManager.persist(team);
 		entityManager.persist(member);
+		transaction.commit();
+	}
+
+	private void initNewTeamAndMemberWithOrderAndProduct() {
+		Team8 team = Team8.of("New Team2");
+		Member8 member = Member8.of("New Member2");
+		Product8 product = Product8.of("New Product");
+		Order8 order = Order8.create();
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.persist(team);
+		entityManager.persist(product);
+		member.setTeam(team);
+		entityManager.persist(member);
+		order.setMember(member);
+		order.setProduct(product);
+		entityManager.persist(order);
 		transaction.commit();
 	}
 
@@ -118,5 +142,26 @@ public class DataLoadExample implements Runnable {
 
 		member.setTeam(team);
 		transaction.commit();
+	}
+
+	private void traverseMember() {
+		System.out.println("Member 객체 조회 (Member <-> Team 즉시 로딩");
+
+		entityManager.clear();
+
+		Member8 member = entityManager.find(Member8.class, 3L);
+
+		System.out.println(member);
+	}
+
+	private void traverseOrder() {
+		System.out.println("Order 객체 조회 (Member <-> Order 지연 로딩, Order <-> Product 즉시 로딩)");
+
+		entityManager.clear();
+
+		Member8 member = entityManager.find(Member8.class, 3L);
+		System.out.println(member);
+		System.out.println(member.getTeam());
+		System.out.println(member.getOrders());
 	}
 }

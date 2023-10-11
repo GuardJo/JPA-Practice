@@ -1,5 +1,8 @@
 package com.practice.jpa.chapter08.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -7,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -17,9 +21,12 @@ public class Member8 {
 	private Long id;
 	private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "TEAM_ID")
 	private Team8 team;
+
+	@OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+	private List<Order8> orders = new ArrayList<>();
 
 	protected Member8() {
 
@@ -51,6 +58,10 @@ public class Member8 {
 
 	public Team8 getTeam() {
 		return team;
+	}
+
+	public List<Order8> getOrders() {
+		return orders;
 	}
 
 	@Override
