@@ -5,8 +5,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceUnitUtil;
 
+import com.practice.jpa.chapter08.domain.Child8;
 import com.practice.jpa.chapter08.domain.Member8;
 import com.practice.jpa.chapter08.domain.Order8;
+import com.practice.jpa.chapter08.domain.Parent8;
 import com.practice.jpa.chapter08.domain.Product8;
 import com.practice.jpa.chapter08.domain.Team8;
 
@@ -33,6 +35,9 @@ public class DataLoadExample implements Runnable {
 		initNewTeamAndMemberWithOrderAndProduct();
 		traverseMember();
 		traverseOrder();
+
+		initParentAndChild();
+		removeParentAndChild();
 	}
 
 	private void initData() {
@@ -73,6 +78,17 @@ public class DataLoadExample implements Runnable {
 		order.setMember(member);
 		order.setProduct(product);
 		entityManager.persist(order);
+		transaction.commit();
+	}
+
+	private void initParentAndChild() {
+		Parent8 parent = Parent8.of("New Parent");
+		Child8 child = Child8.of("New Child");
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		child.setParent(parent);
+		entityManager.persist(parent);
 		transaction.commit();
 	}
 
@@ -163,5 +179,20 @@ public class DataLoadExample implements Runnable {
 		System.out.println(member);
 		System.out.println(member.getTeam());
 		System.out.println(member.getOrders());
+	}
+
+	private void removeParentAndChild() {
+		System.out.println("Parent 객제 삭제");
+
+		long childId = 1L;
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+
+		Child8 child = entityManager.find(Child8.class, childId);
+		Parent8 parent = child.getParent();
+
+		entityManager.remove(parent);
+		transaction.commit();
 	}
 }
