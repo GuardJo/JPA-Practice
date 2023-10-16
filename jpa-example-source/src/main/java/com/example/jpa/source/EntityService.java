@@ -47,20 +47,13 @@ public class EntityService implements Runnable {
 		EntityTransaction transaction = entityManager.getTransaction();
 
 		transaction.begin();
-
-		entityManager.persist(category);
-		entityManager.persist(member);
-		entityManager.persist(album);
-		entityManager.persist(book);
-		entityManager.persist(movie);
+		
 		album.getCategories().add(category);
 		book.getCategories().add(category);
 		movie.getCategories().add(category);
-		entityManager.persist(delivery);
 
 		order.setMember(member);
 		order.setDelivery(delivery);
-		entityManager.persist(order);
 
 		orderItem.setOrder(order);
 		orderItem.setItem(album);
