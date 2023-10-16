@@ -78,6 +78,7 @@ public class EntityService implements Runnable {
 	}
 
 	private void traverseEntityObjects() {
+		entityManager.clear();
 		System.out.println("객체 그래프 탐색");
 		OrderItem orderItem = entityManager.find(OrderItem.class, 1L);
 		Item item = orderItem.getItem();
@@ -95,6 +96,7 @@ public class EntityService implements Runnable {
 	}
 
 	private void traverseEntityObjectsWithTwinRelation() {
+		entityManager.clear();
 		System.out.println("양방향 객체 그래프 탐색");
 
 		Member member = entityManager.find(Member.class, 1L);
