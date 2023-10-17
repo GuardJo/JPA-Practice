@@ -47,20 +47,13 @@ public class EntityService implements Runnable {
 		EntityTransaction transaction = entityManager.getTransaction();
 
 		transaction.begin();
-
-		entityManager.persist(category);
-		entityManager.persist(member);
-		entityManager.persist(album);
-		entityManager.persist(book);
-		entityManager.persist(movie);
+		
 		album.getCategories().add(category);
 		book.getCategories().add(category);
 		movie.getCategories().add(category);
-		entityManager.persist(delivery);
 
 		order.setMember(member);
 		order.setDelivery(delivery);
-		entityManager.persist(order);
 
 		orderItem.setOrder(order);
 		orderItem.setItem(album);
@@ -78,6 +71,7 @@ public class EntityService implements Runnable {
 	}
 
 	private void traverseEntityObjects() {
+		entityManager.clear();
 		System.out.println("객체 그래프 탐색");
 		OrderItem orderItem = entityManager.find(OrderItem.class, 1L);
 		Item item = orderItem.getItem();
@@ -95,6 +89,7 @@ public class EntityService implements Runnable {
 	}
 
 	private void traverseEntityObjectsWithTwinRelation() {
+		entityManager.clear();
 		System.out.println("양방향 객체 그래프 탐색");
 
 		Member member = entityManager.find(Member.class, 1L);

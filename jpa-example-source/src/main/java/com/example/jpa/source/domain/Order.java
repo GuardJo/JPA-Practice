@@ -6,10 +6,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,10 +43,10 @@ public class Order extends MetaData {
 	@Column(nullable = false)
 	@Enumerated(value = EnumType.STRING)
 	private OrderStatus status;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "MEMBER_ID")
 	private Member member;
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "DELIVERY_ID")
 	private Delivery delivery;
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
@@ -42,7 +43,7 @@ public abstract class Item extends MetaData {
 	@OneToMany(mappedBy = "item")
 	private final List<OrderItem> orderItems = new ArrayList<>();
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 		name = "CATEGORY_ITEM",
 		joinColumns = @JoinColumn(name = "ITEM_ID"),
