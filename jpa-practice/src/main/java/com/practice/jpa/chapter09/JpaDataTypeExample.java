@@ -5,6 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import com.practice.jpa.chapter09.domain.Member9;
+import com.practice.jpa.chapter09.domain.types.Address;
 
 public class JpaDataTypeExample implements Runnable {
 	private final EntityManager entityManager;
@@ -24,9 +25,8 @@ public class JpaDataTypeExample implements Runnable {
 		String city = "서울";
 		String street = "서울숲길";
 		String zipcode = "111-111";
-		member.setCity(city);
-		member.setStreet(street);
-		member.setZipcode(zipcode);
+		Address address = Address.create(zipcode, city, street);
+		member.setHomeAddress(address);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();

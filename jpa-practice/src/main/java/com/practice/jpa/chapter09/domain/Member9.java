@@ -2,13 +2,15 @@ package com.practice.jpa.chapter09.domain;
 
 import java.util.Date;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+
+import com.practice.jpa.chapter09.domain.types.Address;
+import com.practice.jpa.chapter09.domain.types.Period;
 
 @Entity
 @Table(name = "CH09_MEMBER")
@@ -20,15 +22,12 @@ public class Member9 {
 	private int age;
 
 	// 근무 기간
-	@Temporal(TemporalType.DATE)
-	private Date startDate;
-	@Temporal(TemporalType.DATE)
-	private Date finishedDate;
+	@Embedded
+	private Period workPeriod;
 
 	// 집 주소
-	private String city;
-	private String street;
-	private String zipcode;
+	@Embedded
+	private Address homeAddress;
 
 	protected Member9() {
 
@@ -37,8 +36,7 @@ public class Member9 {
 	private Member9(String name, int age) {
 		this.name = name;
 		this.age = age;
-		this.startDate = new Date();
-		this.finishedDate = new Date();
+		this.workPeriod = Period.create();
 	}
 
 	public static Member9 create(String name, int age) {
@@ -58,23 +56,15 @@ public class Member9 {
 	}
 
 	public Date getStartDate() {
-		return startDate;
+		return workPeriod.getStartDate();
 	}
 
 	public Date getFinishedDate() {
-		return finishedDate;
+		return workPeriod.getFinishedDate();
 	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public String getStreet() {
-		return street;
-	}
-
-	public String getZipcode() {
-		return zipcode;
+	public Address getHomeAddress() {
+		return homeAddress;
 	}
 
 	public void setName(String name) {
@@ -85,16 +75,8 @@ public class Member9 {
 		this.age = age;
 	}
 
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
-	}
-
-	public void setZipcode(String zipcode) {
-		this.zipcode = zipcode;
+	public void setHomeAddress(Address homeAddress) {
+		this.homeAddress = homeAddress;
 	}
 
 	@Override
@@ -103,11 +85,8 @@ public class Member9 {
 			"id=" + id +
 			", name='" + name + '\'' +
 			", age=" + age +
-			", startDate=" + startDate +
-			", finishedDate=" + finishedDate +
-			", city='" + city + '\'' +
-			", street='" + street + '\'' +
-			", zipcode='" + zipcode + '\'' +
+			", workPeriod=" + workPeriod +
+			", homeAddress=" + homeAddress +
 			'}';
 	}
 }
