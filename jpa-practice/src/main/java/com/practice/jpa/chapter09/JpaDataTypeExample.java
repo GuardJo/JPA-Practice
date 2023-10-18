@@ -21,6 +21,12 @@ public class JpaDataTypeExample implements Runnable {
 
 	private void initData() {
 		Member9 member = Member9.create("kyeongho", 27);
+		String city = "서울";
+		String street = "서울숲길";
+		String zipcode = "111-111";
+		member.setCity(city);
+		member.setStreet(street);
+		member.setZipcode(zipcode);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
