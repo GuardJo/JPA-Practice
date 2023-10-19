@@ -2,6 +2,9 @@ package com.practice.jpa.chapter09.domain;
 
 import java.util.Date;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,6 +32,15 @@ public class Member9 {
 	// 집 주소
 	@Embedded
 	private Address homeAddress;
+	// 회사 주소
+	@Embedded
+	@AttributeOverrides({
+		@AttributeOverride(name = "zipcode.zip", column = @Column(name = "COMPANY_ZIP")),
+		@AttributeOverride(name = "zipcode.code", column = @Column(name = "COMPANY_CODE")),
+		@AttributeOverride(name = "city", column = @Column(name = "COMPANY_CITY")),
+		@AttributeOverride(name = "street", column = @Column(name = "COMPANY_STREET"))
+	})
+	private Address companyAddress;
 
 	// 휴대폰 번호
 	@Embedded
@@ -80,6 +92,10 @@ public class Member9 {
 		return phoneNumber;
 	}
 
+	public Address getCompanyAddress() {
+		return companyAddress;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -90,6 +106,10 @@ public class Member9 {
 
 	public void setHomeAddress(Address homeAddress) {
 		this.homeAddress = homeAddress;
+	}
+
+	public void setCompanyAddress(Address companyAddress) {
+		this.companyAddress = companyAddress;
 	}
 
 	public void setWorkPeriod(Period workPeriod) {
@@ -108,6 +128,7 @@ public class Member9 {
 			", age=" + age +
 			", workPeriod=" + workPeriod +
 			", homeAddress=" + homeAddress +
+			", companyAddress=" + companyAddress +
 			", phoneNumber=" + phoneNumber +
 			'}';
 	}

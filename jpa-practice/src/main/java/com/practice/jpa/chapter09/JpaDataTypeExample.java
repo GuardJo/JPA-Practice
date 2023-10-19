@@ -29,11 +29,13 @@ public class JpaDataTypeExample implements Runnable {
 		String street = "서울숲길";
 		Zipcode zipcode = Zipcode.create("000", "111");
 		Address address = Address.create(zipcode, city, street);
+		Address companyAddress = Address.create(zipcode, "경기", "대왕판교로");
 		PhoneServiceProvider serviceProvider = PhoneServiceProvider.create("U+", 010);
 		PhoneNumber phoneNumber = PhoneNumber.create("kr", "010-3333-4444", serviceProvider);
 		member.setHomeAddress(address);
+		member.setCompanyAddress(companyAddress);
 		member.setPhoneNumber(phoneNumber);
-		
+
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		entityManager.persist(member);
