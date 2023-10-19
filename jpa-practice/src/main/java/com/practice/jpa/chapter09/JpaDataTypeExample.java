@@ -5,7 +5,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import com.practice.jpa.chapter09.domain.Member9;
+import com.practice.jpa.chapter09.domain.PhoneServiceProvider;
 import com.practice.jpa.chapter09.domain.types.Address;
+import com.practice.jpa.chapter09.domain.types.PhoneNumber;
+import com.practice.jpa.chapter09.domain.types.Zipcode;
 
 public class JpaDataTypeExample implements Runnable {
 	private final EntityManager entityManager;
@@ -24,10 +27,13 @@ public class JpaDataTypeExample implements Runnable {
 		Member9 member = Member9.create("kyeongho", 27);
 		String city = "서울";
 		String street = "서울숲길";
-		String zipcode = "111-111";
+		Zipcode zipcode = Zipcode.create("000", "111");
 		Address address = Address.create(zipcode, city, street);
+		PhoneServiceProvider serviceProvider = PhoneServiceProvider.create("U+", 010);
+		PhoneNumber phoneNumber = PhoneNumber.create("kr", "010-3333-4444", serviceProvider);
 		member.setHomeAddress(address);
-
+		member.setPhoneNumber(phoneNumber);
+		
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 		entityManager.persist(member);

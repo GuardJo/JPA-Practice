@@ -1,10 +1,12 @@
 package com.practice.jpa.chapter09.domain.types;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 
 @Embeddable
 public class Address {
-	private String zipcode;
+	@Embedded
+	private Zipcode zipcode;
 	private String city;
 	private String street;
 
@@ -12,17 +14,17 @@ public class Address {
 
 	}
 
-	private Address(String zipcode, String city, String street) {
+	private Address(Zipcode zipcode, String city, String street) {
 		this.zipcode = zipcode;
 		this.city = city;
 		this.street = street;
 	}
 
-	public static Address create(String zipcode, String city, String street) {
+	public static Address create(Zipcode zipcode, String city, String street) {
 		return new Address(zipcode, city, street);
 	}
 
-	public String getZipcode() {
+	public Zipcode getZipcode() {
 		return zipcode;
 	}
 

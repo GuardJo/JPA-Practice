@@ -11,6 +11,7 @@ import javax.persistence.Table;
 
 import com.practice.jpa.chapter09.domain.types.Address;
 import com.practice.jpa.chapter09.domain.types.Period;
+import com.practice.jpa.chapter09.domain.types.PhoneNumber;
 
 @Entity
 @Table(name = "CH09_MEMBER")
@@ -28,6 +29,10 @@ public class Member9 {
 	// 집 주소
 	@Embedded
 	private Address homeAddress;
+
+	// 휴대폰 번호
+	@Embedded
+	private PhoneNumber phoneNumber;
 
 	protected Member9() {
 
@@ -67,6 +72,14 @@ public class Member9 {
 		return homeAddress;
 	}
 
+	public Period getWorkPeriod() {
+		return workPeriod;
+	}
+
+	public PhoneNumber getPhoneNumber() {
+		return phoneNumber;
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -79,6 +92,14 @@ public class Member9 {
 		this.homeAddress = homeAddress;
 	}
 
+	public void setWorkPeriod(Period workPeriod) {
+		this.workPeriod = workPeriod;
+	}
+
+	public void setPhoneNumber(PhoneNumber phoneNumber) {
+		this.phoneNumber = phoneNumber;
+	}
+
 	@Override
 	public String toString() {
 		return "Member9{" +
@@ -87,6 +108,7 @@ public class Member9 {
 			", age=" + age +
 			", workPeriod=" + workPeriod +
 			", homeAddress=" + homeAddress +
+			", phoneNumber=" + phoneNumber +
 			'}';
 	}
 }
