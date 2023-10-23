@@ -5,8 +5,10 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import com.practice.jpa.chapter09.domain.Member9;
+import com.practice.jpa.chapter09.domain.Member9_2;
 import com.practice.jpa.chapter09.domain.PhoneServiceProvider;
 import com.practice.jpa.chapter09.domain.types.Address;
+import com.practice.jpa.chapter09.domain.types.Period;
 import com.practice.jpa.chapter09.domain.types.PhoneNumber;
 import com.practice.jpa.chapter09.domain.types.Zipcode;
 
@@ -21,6 +23,9 @@ public class JpaDataTypeExample implements Runnable {
 	public void run() {
 		initData();
 		printMember();
+
+		initCollections();
+		printMemberWithCollectionTable();
 	}
 
 	private void initData() {
@@ -42,11 +47,33 @@ public class JpaDataTypeExample implements Runnable {
 		transaction.commit();
 	}
 
+	private void initCollections() {
+		Member9_2 member = Member9_2.create("kyeongho2");
+		member.getFavoriteFood().add("탕수육");
+		member.getFavoriteFood().add("피자");
+
+		member.getPeriods().add(Period.create());
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.persist(member);
+		transaction.commit();
+	}
+
 	private void printMember() {
 		System.out.println("Member 조회");
 		long memberId = 1L;
 
 		Member9 member = entityManager.find(Member9.class, memberId);
+
+		System.out.println(member);
+	}
+
+	private void printMemberWithCollectionTable() {
+		System.out.println("CollectionTable이 포함된 Member 조회");
+		long memberId = 1L;
+
+		Member9_2 member = entityManager.find(Member9_2.class, memberId);
 
 		System.out.println(member);
 	}
