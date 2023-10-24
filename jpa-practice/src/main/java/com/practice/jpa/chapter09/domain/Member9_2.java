@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -12,9 +13,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import com.practice.jpa.chapter09.domain.types.Period;
 
 @Entity
 @Table(name = "CH09_MEMBER_2")
@@ -31,12 +31,9 @@ public class Member9_2 {
 	)
 	private Set<String> favoriteFood = new HashSet<>();
 
-	@ElementCollection
-	@CollectionTable(
-		name = "CH09_PERIOD",
-		joinColumns = @JoinColumn(name = "MEMBER_ID")
-	)
-	private List<Period> periods = new ArrayList<>();
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "MEMBER_ID")
+	private List<Period9> periods = new ArrayList<>();
 
 	protected Member9_2() {
 
@@ -66,7 +63,7 @@ public class Member9_2 {
 		return favoriteFood;
 	}
 
-	public List<Period> getPeriods() {
+	public List<Period9> getPeriods() {
 		return periods;
 	}
 
@@ -74,7 +71,7 @@ public class Member9_2 {
 		this.favoriteFood = favoriteFood;
 	}
 
-	public void setPeriods(List<Period> periods) {
+	public void setPeriods(List<Period9> periods) {
 		this.periods = periods;
 	}
 

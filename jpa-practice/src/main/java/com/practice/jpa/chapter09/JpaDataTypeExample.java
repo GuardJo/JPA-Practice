@@ -9,9 +9,9 @@ import javax.persistence.EntityTransaction;
 
 import com.practice.jpa.chapter09.domain.Member9;
 import com.practice.jpa.chapter09.domain.Member9_2;
+import com.practice.jpa.chapter09.domain.Period9;
 import com.practice.jpa.chapter09.domain.PhoneServiceProvider;
 import com.practice.jpa.chapter09.domain.types.Address;
-import com.practice.jpa.chapter09.domain.types.Period;
 import com.practice.jpa.chapter09.domain.types.PhoneNumber;
 import com.practice.jpa.chapter09.domain.types.Zipcode;
 
@@ -56,7 +56,7 @@ public class JpaDataTypeExample implements Runnable {
 		member.getFavoriteFood().add("탕수육");
 		member.getFavoriteFood().add("피자");
 
-		member.getPeriods().add(Period.create());
+		member.getPeriods().add(Period9.create());
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
@@ -92,10 +92,11 @@ public class JpaDataTypeExample implements Runnable {
 		transaction.begin();
 
 		Member9_2 member = entityManager.find(Member9_2.class, memberId);
-		List<Period> newPeriods = new ArrayList<>();
-		newPeriods.add(Period.create());
-		member.setPeriods(newPeriods);
-		
+		List<Period9> periods = new ArrayList<>();
+		periods.add(Period9.create());
+
+		member.setPeriods(periods);
+
 		transaction.commit();
 	}
 }
