@@ -70,6 +70,14 @@ public class Member9_2 {
 		return periods;
 	}
 
+	public void setFavoriteFood(Set<String> favoriteFood) {
+		this.favoriteFood = favoriteFood;
+	}
+
+	public void setPeriods(List<Period> periods) {
+		this.periods = periods;
+	}
+
 	@Override
 	public String toString() {
 		return "Member9_2{" +

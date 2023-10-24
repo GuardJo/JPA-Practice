@@ -1,5 +1,8 @@
 package com.practice.jpa.chapter09;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
@@ -26,6 +29,7 @@ public class JpaDataTypeExample implements Runnable {
 
 		initCollections();
 		printMemberWithCollectionTable();
+		updateMemberWithCollectionTable();
 	}
 
 	private void initData() {
@@ -70,11 +74,28 @@ public class JpaDataTypeExample implements Runnable {
 	}
 
 	private void printMemberWithCollectionTable() {
+		entityManager.clear();
 		System.out.println("CollectionTable이 포함된 Member 조회");
 		long memberId = 1L;
 
 		Member9_2 member = entityManager.find(Member9_2.class, memberId);
 
 		System.out.println(member);
+	}
+
+	private void updateMemberWithCollectionTable() {
+		entityManager.clear();
+		System.out.println("CollectionTable이 포함된 Member 갱신");
+		long memberId = 1L;
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+
+		Member9_2 member = entityManager.find(Member9_2.class, memberId);
+		List<Period> newPeriods = new ArrayList<>();
+		newPeriods.add(Period.create());
+		member.setPeriods(newPeriods);
+		
+		transaction.commit();
 	}
 }
