@@ -12,6 +12,7 @@ import com.practice.jpa.chapter05.RelationMappingExample;
 import com.practice.jpa.chapter06.RelationshipMappingExample;
 import com.practice.jpa.chapter07.MultiIdExample;
 import com.practice.jpa.chapter08.DataLoadExample;
+import com.practice.jpa.chapter09.JpaDataTypeExample;
 
 /**
  * Hello JPA!
@@ -31,6 +32,7 @@ public class App {
 		RelationshipMappingExample relationshipMappingExample = new RelationshipMappingExample(entityManagerFactory);
 		MultiIdExample multiIdExample = new MultiIdExample(entityManagerFactory);
 		DataLoadExample dataLoadExample = new DataLoadExample(entityManagerFactory);
+		JpaDataTypeExample jpaDataTypeExample = new JpaDataTypeExample(entityManagerFactory);
 
 		//        jpaExample.run();
 		//        entityLifecycleExample.run();
@@ -40,7 +42,8 @@ public class App {
 		// relationMappingExample.run();
 		// relationshipMappingExample.run();
 		// multiIdExample.run();
-		dataLoadExample.run();
+		// dataLoadExample.run();
+		jpaDataTypeExample.run();
 
 		entityManagerFactory.close();
 	}
