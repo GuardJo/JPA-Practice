@@ -31,7 +31,9 @@
 ### MEMBER
 
 - NAME : 회원명
-- ADDRESS : 회원 주소
+- CITY : 거주 도시
+- STREET : 도로명 주소
+- ZIPCODE : 우편 번호
 - REGISTED_DATE : 가입 일시
 - CREATED_DATE : 생성 일시
 - MODIFIED_DATE : 수정 일시

@@ -14,6 +14,7 @@ import com.example.jpa.source.domain.Movie;
 import com.example.jpa.source.domain.Order;
 import com.example.jpa.source.domain.OrderItem;
 import com.example.jpa.source.domain.OrderStatus;
+import com.example.jpa.source.domain.type.Address;
 
 public class EntityService implements Runnable {
 	private final EntityManager entityManager;
@@ -32,8 +33,9 @@ public class EntityService implements Runnable {
 
 	private void createEntities() {
 		System.out.println("테스트 데이터 생성 및 저장");
+		Address address = Address.create("SEOUL", "road1", 111);
 		Category category = Category.of("Basic Category");
-		Member member = Member.of("tester", "seoul");
+		Member member = Member.of("tester", address);
 		Album album = Album.of("testAlbume", 1000, 1, "artist", "etc");
 		Book book = Book.of("testBook", 2000, 1, "author", "1234F");
 		Movie movie = Movie.of("testMovie", 25000, 1, "director", "actor");
@@ -47,7 +49,7 @@ public class EntityService implements Runnable {
 		EntityTransaction transaction = entityManager.getTransaction();
 
 		transaction.begin();
-		
+
 		album.getCategories().add(category);
 		book.getCategories().add(category);
 		movie.getCategories().add(category);
