@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.example.jpa.source.domain.type.Address;
 
 /**
  * 회원 도메인
@@ -29,8 +32,8 @@ public class Member extends MetaData {
 	private Long id;
 	@Column(nullable = false)
 	private String name;
-	@Column(length = 500)
-	private String address;
+	@Embedded
+	private Address address;
 	@Column(nullable = false)
 	@Temporal(value = TemporalType.TIMESTAMP)
 	private Date registedDate;
@@ -42,7 +45,7 @@ public class Member extends MetaData {
 
 	}
 
-	private Member(String name, String address, Date registedDate) {
+	private Member(String name, Address address, Date registedDate) {
 		this.name = name;
 		this.address = address;
 		this.registedDate = registedDate;
@@ -50,7 +53,7 @@ public class Member extends MetaData {
 		this.modifiedDate = LocalDateTime.now();
 	}
 
-	public static Member of(String name, String address) {
+	public static Member of(String name, Address address) {
 		return new Member(name, address, new Date());
 	}
 
@@ -66,11 +69,11 @@ public class Member extends MetaData {
 		this.name = name;
 	}
 
-	public String getAddress() {
+	public Address getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 

@@ -3,6 +3,7 @@ package com.example.jpa.source.domain;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.example.jpa.source.domain.type.Address;
+
 @Entity
 @Table(name = "DELIVERY")
 public class Delivery extends MetaData {
@@ -18,11 +21,8 @@ public class Delivery extends MetaData {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "DELIVERY_ID")
 	private Long id;
-	@Column(length = 50)
-	private String city;
-	@Column(length = 50)
-	private String street;
-	private int zipCode = 0;
+	@Embedded
+	private Address address;
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
 	private DeliveryStatus status = DeliveryStatus.PREPARING;
@@ -32,9 +32,7 @@ public class Delivery extends MetaData {
 	}
 
 	private Delivery(String city, String street, int zipCode) {
-		this.city = city;
-		this.street = street;
-		this.zipCode = zipCode;
+		this.address = Address.create(city, street, zipCode);
 		this.createdDate = LocalDateTime.now();
 		this.modifiedDate = LocalDateTime.now();
 	}
@@ -47,32 +45,12 @@ public class Delivery extends MetaData {
 		return id;
 	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public String getStreet() {
-		return street;
-	}
-
-	public int getZipCode() {
-		return zipCode;
+	public Address getAddress() {
+		return address;
 	}
 
 	public DeliveryStatus getStatus() {
 		return status;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public void setStreet(String street) {
-		this.street = street;
-	}
-
-	public void setZipCode(int zipCode) {
-		this.zipCode = zipCode;
 	}
 
 	public void setStatus(DeliveryStatus status) {
@@ -83,9 +61,7 @@ public class Delivery extends MetaData {
 	public String toString() {
 		return "Delivery{" +
 			"id=" + id +
-			", city='" + city + '\'' +
-			", street='" + street + '\'' +
-			", zipCode=" + zipCode +
+			", address=" + address +
 			", status=" + status +
 			", createdDate=" + createdDate +
 			", modifiedDate=" + modifiedDate +
