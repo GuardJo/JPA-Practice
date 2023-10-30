@@ -5,6 +5,9 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import com.practice.jpa.chapter10.domain.Member10;
 
@@ -23,6 +26,7 @@ public class QuerySearchExample implements Runnable {
 	public void run() {
 		initData();
 		searchByJpql();
+		searchByCriteria();
 	}
 
 	private void initData() {
@@ -43,6 +47,22 @@ public class QuerySearchExample implements Runnable {
 		String jpql = "select m from Member10 m where m.name = '" + searchName + "'";
 
 		List<Member10> members = entityManager.createQuery(jpql, Member10.class).getResultList();
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchByCriteria() {
+		String searchName = "test2";
+		System.out.println("Criteria 검색 쿼리 테스트 : name = " + searchName);
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10> query = criteriaBuilder.createQuery(Member10.class);
+
+		Root<Member10> m = query.from(Member10.class);
+
+		CriteriaQuery<Member10> criteriaQuery = query.select(m).where(criteriaBuilder.equal(m.get("name"), searchName));
+
+		List<Member10> members = entityManager.createQuery(criteriaQuery).getResultList();
 
 		members.forEach(System.out::println);
 	}
