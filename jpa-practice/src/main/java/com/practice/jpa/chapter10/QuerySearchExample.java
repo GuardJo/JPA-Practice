@@ -9,6 +9,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.Session;
+
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.practice.jpa.chapter10.domain.Member10;
 import com.practice.jpa.chapter10.domain.QMember10;
@@ -30,6 +32,8 @@ public class QuerySearchExample implements Runnable {
 		searchByJpql();
 		searchByCriteria();
 		searchByQuerydsl();
+		searchByNativeQuery();
+		getJdbcConnection();
 	}
 
 	private void initData() {
@@ -82,5 +86,31 @@ public class QuerySearchExample implements Runnable {
 			.list(member);
 
 		members.forEach(System.out::println);
+	}
+
+	private void searchByNativeQuery() {
+		String searchName = "test2";
+		System.out.println("Native Query 검색 테스트 : name = " + searchName);
+
+		String query = "select *\n"
+			+ "from CH10_MEMBER\n"
+			+ "where NAME = '" + searchName + "'";
+
+		List<Member10> members = entityManager.createNativeQuery(query, Member10.class).getResultList();
+
+		members.forEach(System.out::println);
+	}
+
+	private void getJdbcConnection() {
+		System.out.println("Jdbc Connection 취득 테스트");
+
+		Session session = entityManager.unwrap(Session.class);
+
+		session.doWork(connection -> {
+			System.out.println("DB : " + connection.getMetaData().getDatabaseProductName());
+			connection.close();
+		});
+
+		session.close();
 	}
 }
