@@ -9,7 +9,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import com.mysema.query.jpa.impl.JPAQuery;
 import com.practice.jpa.chapter10.domain.Member10;
+import com.practice.jpa.chapter10.domain.QMember10;
 
 public class QuerySearchExample implements Runnable {
 	private final EntityManager entityManager;
@@ -27,6 +29,7 @@ public class QuerySearchExample implements Runnable {
 		initData();
 		searchByJpql();
 		searchByCriteria();
+		searchByQuerydsl();
 	}
 
 	private void initData() {
@@ -63,6 +66,20 @@ public class QuerySearchExample implements Runnable {
 		CriteriaQuery<Member10> criteriaQuery = query.select(m).where(criteriaBuilder.equal(m.get("name"), searchName));
 
 		List<Member10> members = entityManager.createQuery(criteriaQuery).getResultList();
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchByQuerydsl() {
+		String searchName = "test2";
+		System.out.println("QueryDSL 검색 쿼리 테스트 : name = " + searchName);
+
+		JPAQuery query = new JPAQuery(entityManager);
+		QMember10 member = QMember10.member10;
+
+		List<Member10> members = query.from(member)
+			.where(member.name.eq(searchName))
+			.list(member);
 
 		members.forEach(System.out::println);
 	}

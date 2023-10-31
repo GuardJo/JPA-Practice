@@ -102,6 +102,9 @@ fabric.properties
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# QueryDSL
+src/main/generated
+
 # Package Files #
 *.jar
 *.war
