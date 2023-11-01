@@ -13,6 +13,7 @@ import com.practice.jpa.chapter06.RelationshipMappingExample;
 import com.practice.jpa.chapter07.MultiIdExample;
 import com.practice.jpa.chapter08.DataLoadExample;
 import com.practice.jpa.chapter09.JpaDataTypeExample;
+import com.practice.jpa.chapter10.JpqlSearchExample;
 import com.practice.jpa.chapter10.QuerySearchExample;
 
 /**
@@ -35,6 +36,7 @@ public class App {
 		DataLoadExample dataLoadExample = new DataLoadExample(entityManagerFactory);
 		JpaDataTypeExample jpaDataTypeExample = new JpaDataTypeExample(entityManagerFactory);
 		QuerySearchExample querySearchExample = new QuerySearchExample(entityManagerFactory);
+		JpqlSearchExample jpqlSearchExample = new JpqlSearchExample(entityManagerFactory);
 
 		//        jpaExample.run();
 		//        entityLifecycleExample.run();
@@ -47,6 +49,7 @@ public class App {
 		// dataLoadExample.run();
 		// jpaDataTypeExample.run();
 		querySearchExample.run();
+		jpqlSearchExample.run();
 
 		entityManagerFactory.close();
 	}
