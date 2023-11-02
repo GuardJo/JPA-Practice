@@ -27,6 +27,7 @@ public class JpqlSearchExample implements Runnable {
 		selectData();
 		selectDataWithTypeQuery();
 		selectDataWithQuery();
+		selectParameterBindingQuery();
 	}
 
 	private void initData() {
@@ -76,5 +77,27 @@ public class JpqlSearchExample implements Runnable {
 			System.out.println(o[0]);
 			System.out.println(o[1]);
 		});
+	}
+
+	private void selectParameterBindingQuery() {
+		System.out.println("Parameter Binding 종류 별 조회 테스트");
+		String searchName = "Tester";
+		List<Member10_2> members;
+
+		System.out.println("이름 기준");
+		TypedQuery<Member10_2> nameQuery = entityManager.createQuery("select m from Member10_2 m where m.username = :searchName", Member10_2.class);
+		members = nameQuery
+			.setParameter("searchName", searchName)
+			.getResultList();
+
+		members.forEach(System.out::println);
+
+		System.out.println("위치 기준");
+		TypedQuery<Member10_2> locationQuery = entityManager.createQuery("select m from Member10_2 m where m.username = ?1", Member10_2.class);
+		members = locationQuery
+			.setParameter(1, searchName)
+			.getResultList();
+
+		members.forEach(System.out::println);
 	}
 }
