@@ -35,6 +35,7 @@ public class JpqlSearchExample implements Runnable {
 		calcScalarData();
 		findMultiData();
 		createNewDto();
+		findWithPagination();
 	}
 
 	private void initData() {
@@ -44,11 +45,17 @@ public class JpqlSearchExample implements Runnable {
 		member.setTeam(team);
 		Address10 address = Address10.create("SEOUL", "GIL", "100-111");
 		Order10 order = Order10.create(1, address, member, product);
+		Member10_2 member2 = Member10_2.create("tester2", 30);
+		Member10_2 member3 = Member10_2.create("Human", 15);
+		member2.setTeam(team);
+		member3.setTeam(team);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
 
 		entityManager.persist(order);
+		entityManager.persist(member2);
+		entityManager.persist(member3);
 
 		transaction.commit();
 	}
@@ -188,5 +195,17 @@ public class JpqlSearchExample implements Runnable {
 			"select new com.practice.jpa.chapter10.dto.UserDto10(m.username, m.age) from Member10_2 m", UserDto10.class);
 		List<UserDto10> userDtoList = userDtoQuery.getResultList();
 		userDtoList.forEach(System.out::println);
+	}
+
+	private void findWithPagination() {
+		System.out.println("데이터 목록 조회 시 Pagination 처리 테스트");
+
+		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m order by m.age desc ", Member10_2.class);
+		query.setFirstResult(10);
+		query.setMaxResults(20);
+
+		List<Member10_2> members = query.getResultList();
+
+		members.forEach(System.out::println);
 	}
 }
