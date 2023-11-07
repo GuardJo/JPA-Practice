@@ -14,6 +14,7 @@ import com.practice.jpa.chapter10.domain.Member10_2;
 import com.practice.jpa.chapter10.domain.Order10;
 import com.practice.jpa.chapter10.domain.Product10;
 import com.practice.jpa.chapter10.domain.Team10;
+import com.practice.jpa.chapter10.dto.TeamAvgAgeDto;
 import com.practice.jpa.chapter10.dto.UserDto10;
 
 public class JpqlSearchExample implements Runnable {
@@ -36,6 +37,9 @@ public class JpqlSearchExample implements Runnable {
 		findMultiData();
 		createNewDto();
 		findWithPagination();
+		calculateReport();
+		searchMemberGroupByTeam();
+		searchMemberSortAge();
 	}
 
 	private void initData() {
@@ -203,6 +207,47 @@ public class JpqlSearchExample implements Runnable {
 		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m order by m.age desc ", Member10_2.class);
 		query.setFirstResult(10);
 		query.setMaxResults(20);
+
+		List<Member10_2> members = query.getResultList();
+
+		members.forEach(System.out::println);
+	}
+
+	private void calculateReport() {
+		System.out.println("통계 데이터 조회 테스트");
+
+		TypedQuery<Long> countQuery = entityManager.createQuery("select count(m) from Member10_2 m", Long.class);
+		long totalCount = countQuery.getSingleResult();
+		System.out.println("COUNT : " + totalCount);
+
+		TypedQuery<Integer> maxQuery = entityManager.createQuery("select max(m.age) from Member10_2 m", Integer.class);
+		int maxAge = maxQuery.getSingleResult();
+		System.out.println("MAX age : " + maxAge);
+
+		TypedQuery<Double> avgQuery = entityManager.createQuery("select avg(m.age) from Member10_2 m", Double.class);
+		double avgAge = avgQuery.getSingleResult();
+		System.out.println("AVG age : " + avgAge);
+
+		TypedQuery<Long> sumQuery = entityManager.createQuery("select sum(m.age) from Member10_2 m", Long.class);
+		Long sumAge = sumQuery.getSingleResult();
+		System.out.println("SUM age : " + sumAge);
+	}
+
+	private void searchMemberGroupByTeam() {
+		System.out.println("GROUP BY 및 HAVING을 통한 Team별 Member 나이 평균 조회 테스트");
+
+		TypedQuery<TeamAvgAgeDto> query = entityManager.createQuery(
+			"select new com.practice.jpa.chapter10.dto.TeamAvgAgeDto(t.name, avg(m.age)) from Member10_2 m left join m.team t group by t.name having avg(m.age) >= 10",
+			TeamAvgAgeDto.class);
+
+		List<TeamAvgAgeDto> teamAvgAgeDtos = query.getResultList();
+		teamAvgAgeDtos.forEach(System.out::println);
+	}
+
+	private void searchMemberSortAge() {
+		System.out.println("ORDER BY를 활용하여 MEBER 중 age가 높은 순으로 정렬 테스트");
+
+		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m order by m.age desc", Member10_2.class);
 
 		List<Member10_2> members = query.getResultList();
 
