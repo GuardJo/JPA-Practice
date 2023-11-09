@@ -1,9 +1,13 @@
 package com.practice.jpa.chapter10.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -13,6 +17,9 @@ public class Team10 {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+
+	@OneToMany(mappedBy = "team")
+	private List<Member10_2> members = new ArrayList<>();
 
 	protected Team10() {
 
@@ -32,6 +39,10 @@ public class Team10 {
 
 	public String getName() {
 		return name;
+	}
+
+	public List<Member10_2> getMembers() {
+		return members;
 	}
 
 	@Override

@@ -40,6 +40,11 @@ public class JpqlSearchExample implements Runnable {
 		calculateReport();
 		searchMemberGroupByTeam();
 		searchMemberSortAge();
+		searchMemberInnerJoinTeam();
+		searchMemberOuterJoinTeam();
+		searchMemberAndTeamWithCollectionJoin();
+		searchThetaJoinWithMemberAndTeam();
+		searchJoinOnWithMemberAndTeam();
 	}
 
 	private void initData() {
@@ -250,6 +255,67 @@ public class JpqlSearchExample implements Runnable {
 		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m order by m.age desc", Member10_2.class);
 
 		List<Member10_2> members = query.getResultList();
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchMemberInnerJoinTeam() {
+		System.out.println("INNER JOIN을 통해 MEMBER와 TEAM 조회 테스트");
+		String searchTeamName = "New Team";
+
+		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m inner join m.team t where t.name = :searchName",
+			Member10_2.class);
+
+		List<Member10_2> members = query
+			.setParameter("searchName", searchTeamName)
+			.getResultList();
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchMemberOuterJoinTeam() {
+		System.out.println("OUTER JOIN을 통해 MEMBER와 TEAM 조회 테스트");
+
+		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m left outer join m.team", Member10_2.class);
+
+		List<Member10_2> members = query.getResultList();
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchMemberAndTeamWithCollectionJoin() {
+		System.out.println("Collection Join을 통한 Member 및 Team 조회 테스트");
+
+		System.out.println("단일 값 조회 : Member -> Team");
+		TypedQuery<Member10_2> memberQuery = entityManager.createQuery("select m from Member10_2 m left join m.team", Member10_2.class);
+		List<Member10_2> members = memberQuery.getResultList();
+		members.forEach(System.out::println);
+
+		System.out.println("컬렉션 값 조회 : Team -> Member");
+		TypedQuery<Team10> teamQuery = entityManager.createQuery("select t from Team10 t left join t.members", Team10.class);
+		List<Team10> teams = teamQuery.getResultList();
+		teams.forEach(System.out::println);
+	}
+
+	private void searchThetaJoinWithMemberAndTeam() {
+		System.out.println("THETA JOIN을 통한 MEMBER명과 TEAM명 동일한 데이터 수 반환 테스트");
+
+		TypedQuery<Long> countQuery = entityManager.createQuery("select count(m) from Member10_2 m, Team10 t where m.username = t.name", Long.class);
+		long result = countQuery.getSingleResult();
+
+		System.out.println("Total Count = " + result);
+	}
+
+	private void searchJoinOnWithMemberAndTeam() {
+		System.out.println("JOIN ON을 사용하여 MEMBER와 TEAM을 조인 한 후 필터링하여 조회 테스트");
+
+		String teamName = "new team";
+
+		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m left outer join m.team t on t.name = :searchTeamName",
+			Member10_2.class);
+		List<Member10_2> members = query
+			.setParameter("searchTeamName", teamName)
+			.getResultList();
 
 		members.forEach(System.out::println);
 	}
