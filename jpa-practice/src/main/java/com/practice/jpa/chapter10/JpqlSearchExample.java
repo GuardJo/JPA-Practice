@@ -45,6 +45,9 @@ public class JpqlSearchExample implements Runnable {
 		searchMemberAndTeamWithCollectionJoin();
 		searchThetaJoinWithMemberAndTeam();
 		searchJoinOnWithMemberAndTeam();
+		searchFetchJoinMemberAndTeam();
+		searchFetchJoinTeamAndMember();
+		searchFetchJoinTeamAndMemberWithDistinct();
 	}
 
 	private void initData() {
@@ -318,5 +321,33 @@ public class JpqlSearchExample implements Runnable {
 			.getResultList();
 
 		members.forEach(System.out::println);
+	}
+
+	private void searchFetchJoinMemberAndTeam() {
+		entityManager.clear();
+		System.out.println("Entity에 대한 FETCH JOIN을 사용하여 MEMBER와 TEAM을 즉시 로딩하여 조회 테스트");
+
+		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m join fetch m.team", Member10_2.class);
+		List<Member10_2> members = query.getResultList();
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchFetchJoinTeamAndMember() {
+		entityManager.clear();
+		System.out.println("Collection에 대한 FETCH JOIN을 사용하여 TEAM과 MEMBER를 즉시 로딩하여 조회 테스트");
+
+		TypedQuery<Team10> query = entityManager.createQuery("select t from Team10 t join fetch t.members", Team10.class);
+		List<Team10> teams = query.getResultList();
+		teams.forEach(System.out::println);
+	}
+
+	private void searchFetchJoinTeamAndMemberWithDistinct() {
+		entityManager.clear();
+		System.out.println("Collection에 대한 DISTINCT FETCH JOIN을 사용하여 TEAM과 MEMBER를 즉시 로딩하여 조회 테스트");
+
+		TypedQuery<Team10> query = entityManager.createQuery("select distinct t from Team10 t join fetch t.members", Team10.class);
+		List<Team10> teams = query.getResultList();
+		teams.forEach(System.out::println);
 	}
 }
