@@ -48,6 +48,11 @@ public class JpqlSearchExample implements Runnable {
 		searchFetchJoinMemberAndTeam();
 		searchFetchJoinTeamAndMember();
 		searchFetchJoinTeamAndMemberWithDistinct();
+		searchPathFromStateField();
+		searchPathFromAssociationField();
+		searchPathFromCollectionField();
+		searchPathContinueFromCollectionField();
+		countMembersFromTeam();
 	}
 
 	private void initData() {
@@ -349,5 +354,56 @@ public class JpqlSearchExample implements Runnable {
 		TypedQuery<Team10> query = entityManager.createQuery("select distinct t from Team10 t join fetch t.members", Team10.class);
 		List<Team10> teams = query.getResultList();
 		teams.forEach(System.out::println);
+	}
+
+	private void searchPathFromStateField() {
+		entityManager.clear();
+		System.out.println("경로 탐색 : 상태 필드 경로 탐색 테스트");
+
+		TypedQuery<String> query = entityManager.createQuery("select m.username from Member10_2 m", String.class);
+		List<String> results = query.getResultList();
+		results.forEach(System.out::println);
+	}
+
+	private void searchPathFromAssociationField() {
+		entityManager.clear();
+		System.out.println("경로 탐색 : 연관 필드 단일값 경로 탐색 테스트");
+
+		TypedQuery<Team10> query = entityManager.createQuery("select distinct m.team from Member10_2 m", Team10.class);
+		List<Team10> teams = query.getResultList();
+		teams.forEach(System.out::println);
+	}
+
+	private void searchPathFromCollectionField() {
+		entityManager.clear();
+		System.out.println("경로 탐색 : 연관 필드 컬렉선 경로 텀색 테스트");
+
+		// 여러 Entity 반환할 때에는 Object나 Object[]로 지정해야함
+		TypedQuery<Object> query = entityManager.createQuery("select t.members from Team10 t", Object.class);
+		List<Object> result = query.getResultList();
+
+		result.forEach(System.out::println);
+	}
+
+	private void searchPathContinueFromCollectionField() {
+		entityManager.clear();
+		System.out.println("경로 탐색 : 연관 필드 컬렉션 내 연관 필드로 재탐색 테스트");
+
+		// 해당 컬렉션에서 곧바로 연관 필드 탐색을 할 수 없음 (컬렉션이 탐색의 끝임)
+		// TypedQuery<String> query = entityManager.createQuery("select t.members.username from Team10 t", String.class);
+
+		TypedQuery<String> query = entityManager.createQuery("select m.username from Team10 t join t.members m", String.class);
+		List<String> result = query.getResultList();
+
+		result.forEach(System.out::println);
+	}
+
+	private void countMembersFromTeam() {
+		entityManager.clear();
+		System.out.println("경로 탐색 : 연관 필드 컬렉션 경로 탐색을 통해 특정 컬렉션의 총 개수 반환 테스트");
+
+		TypedQuery<Integer> query = entityManager.createQuery("select size(t.members) from Team10 t", Integer.class);
+		int result = query.getSingleResult();
+		System.out.println("total = " + result);
 	}
 }
