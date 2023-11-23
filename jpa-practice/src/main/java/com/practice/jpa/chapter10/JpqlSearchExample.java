@@ -53,6 +53,8 @@ public class JpqlSearchExample implements Runnable {
 		searchPathFromCollectionField();
 		searchPathContinueFromCollectionField();
 		countMembersFromTeam();
+		searchHigherAgeAvg();
+		searchMembersOfHaveOrders();
 	}
 
 	private void initData() {
@@ -405,5 +407,26 @@ public class JpqlSearchExample implements Runnable {
 		TypedQuery<Integer> query = entityManager.createQuery("select size(t.members) from Team10 t", Integer.class);
 		int result = query.getSingleResult();
 		System.out.println("total = " + result);
+	}
+
+	private void searchHigherAgeAvg() {
+		entityManager.clear();
+		System.out.println("서브 쿼리 : 회원의 나이가 전체 평균 이상인 회원 목록 반환 테스트");
+
+		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m where m.age > (select avg(m2.age) from Member10_2 m2)",
+			Member10_2.class);
+
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void searchMembersOfHaveOrders() {
+		entityManager.clear();
+		System.out.println("서브 쿼리 : 주문 수가 1개 이상인 회원 목록 반환 테스트");
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(
+			"select m from Member10_2 m where (select count(o) from Order10 o where m = o.member) > 0", Member10_2.class);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
 	}
 }
