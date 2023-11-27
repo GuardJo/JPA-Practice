@@ -55,6 +55,10 @@ public class JpqlSearchExample implements Runnable {
 		countMembersFromTeam();
 		searchHigherAgeAvg();
 		searchMembersOfHaveOrders();
+		subQueryExistsFunction();
+		subQueryAllFunction();
+		subQueryAnyFunction();
+		subQueryInFunction();
 	}
 
 	private void initData() {
@@ -63,7 +67,7 @@ public class JpqlSearchExample implements Runnable {
 		Member10_2 member = Member10_2.create("Tester", 28);
 		member.setTeam(team);
 		Address10 address = Address10.create("SEOUL", "GIL", "100-111");
-		Order10 order = Order10.create(1, address, member, product);
+		Order10 order = Order10.create(5, address, member, product);
 		Member10_2 member2 = Member10_2.create("tester2", 30);
 		Member10_2 member3 = Member10_2.create("Human", 15);
 		member2.setTeam(team);
@@ -428,5 +432,48 @@ public class JpqlSearchExample implements Runnable {
 			"select m from Member10_2 m where (select count(o) from Order10 o where m = o.member) > 0", Member10_2.class);
 		List<Member10_2> members = query.getResultList();
 		members.forEach(System.out::println);
+	}
+
+	private void subQueryExistsFunction() {
+		entityManager.clear();
+		System.out.println("서브 쿼리 함수 : Exists 함수를 통해 특정 Team명이 존재하는지 여부 반환 테스트");
+		String searchTeamName = "New Team";
+
+		TypedQuery<Team10> query = entityManager.createQuery(
+			"select t from Team10 t where exists(select t2 from Team10 t2 where t2.name = :searchName)", Team10.class);
+		query.setParameter("searchName", searchTeamName);
+
+		List<Team10> teams = query.getResultList();
+		teams.forEach(System.out::println);
+	}
+
+	private void subQueryAllFunction() {
+		entityManager.clear();
+		System.out.println("서브 쿼리 함수 : ALL 함수를 통해 모든 조건(전체 상품 각각의 재고보다 주문량이 많은)에 대해 참인 요소 반환 테스트");
+
+		TypedQuery<Order10> query = entityManager.createQuery(
+			"select o from Order10 o where o.orderAmount > all(select p.stockAmount from Product10 p)", Order10.class);
+		List<Order10> orders = query.getResultList();
+		orders.forEach(System.out::println);
+	}
+
+	private void subQueryAnyFunction() {
+		entityManager.clear();
+		System.out.println("서브 쿼리 함수 : ANY 함수를 통해 어느 조건(어떤 Team이든 존재하는 Member)에 대해 참인 요소 반환 테스트");
+
+		TypedQuery<Member10_2> query = entityManager.createQuery("select m from Member10_2 m where m.team = any(select t from Team10 t)",
+			Member10_2.class);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void subQueryInFunction() {
+		entityManager.clear();
+		System.out.println("서브 쿼리 함수 : IN 함수를 통해 쿼리 결과 중 하나라도 같은 것이 있으면(20세 이상인 Member를 보유한 Team) 참 반환 테스트");
+
+		TypedQuery<Team10> query = entityManager.createQuery(
+			"select t from Team10 t where t in (select t2 from Team10 t2 join t2.members m2 where m2.age >= 20)", Team10.class);
+		List<Team10> teams = query.getResultList();
+		teams.forEach(System.out::println);
 	}
 }
