@@ -59,6 +59,8 @@ public class JpqlSearchExample implements Runnable {
 		subQueryAllFunction();
 		subQueryAnyFunction();
 		subQueryInFunction();
+		collectionExpressionEmptyQuery();
+		collectionExpressionMembersQuery();
 	}
 
 	private void initData() {
@@ -473,6 +475,29 @@ public class JpqlSearchExample implements Runnable {
 
 		TypedQuery<Team10> query = entityManager.createQuery(
 			"select t from Team10 t where t in (select t2 from Team10 t2 join t2.members m2 where m2.age >= 20)", Team10.class);
+		List<Team10> teams = query.getResultList();
+		teams.forEach(System.out::println);
+	}
+
+	private void collectionExpressionEmptyQuery() {
+		entityManager.clear();
+		System.out.println("조건식 (컬렉션 식) : 컬렉션이 비어있는지 여부에 따른 조건 검색 테스트");
+
+		TypedQuery<Team10> query = entityManager.createQuery("select t from Team10 t where t.members is not empty", Team10.class);
+		List<Team10> teams = query.getResultList();
+
+		teams.forEach(System.out::println);
+	}
+
+	private void collectionExpressionMembersQuery() {
+		entityManager.clear();
+		System.out.println("조건식 (컬렉션 식) : 컬렉션에 특정 엔티티가 포함되어 있는지 여부에 따른 조건 검색 테스트");
+
+		TypedQuery<Member10_2> findMember = entityManager.createQuery("select m from Member10_2 m", Member10_2.class);
+		Member10_2 member = findMember.getResultList().get(0);
+
+		TypedQuery<Team10> query = entityManager.createQuery("select t from Team10 t where :memberParam member of t.members", Team10.class);
+		query.setParameter("memberParam", member);
 		List<Team10> teams = query.getResultList();
 		teams.forEach(System.out::println);
 	}
