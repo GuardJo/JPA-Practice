@@ -61,6 +61,8 @@ public class JpqlSearchExample implements Runnable {
 		subQueryInFunction();
 		collectionExpressionEmptyQuery();
 		collectionExpressionMembersQuery();
+		caseExpressionCoalesceQuery();
+		caseExpressionNullIfQuery();
 	}
 
 	private void initData() {
@@ -72,8 +74,10 @@ public class JpqlSearchExample implements Runnable {
 		Order10 order = Order10.create(5, address, member, product);
 		Member10_2 member2 = Member10_2.create("tester2", 30);
 		Member10_2 member3 = Member10_2.create("Human", 15);
+		Member10_2 member4 = Member10_2.create(null, 18);
 		member2.setTeam(team);
 		member3.setTeam(team);
+		member4.setTeam(team);
 
 		EntityTransaction transaction = entityManager.getTransaction();
 		transaction.begin();
@@ -81,6 +85,7 @@ public class JpqlSearchExample implements Runnable {
 		entityManager.persist(order);
 		entityManager.persist(member2);
 		entityManager.persist(member3);
+		entityManager.persist(member4);
 
 		transaction.commit();
 	}
@@ -500,5 +505,24 @@ public class JpqlSearchExample implements Runnable {
 		query.setParameter("memberParam", member);
 		List<Team10> teams = query.getResultList();
 		teams.forEach(System.out::println);
+	}
+
+	private void caseExpressionCoalesceQuery() {
+		entityManager.clear();
+		System.out.println("조건식 (CASE 식 : COALESCE) : Member 이름 목록 반환, 이 때 name이 null이면 '익명'으로 반환");
+
+		TypedQuery<String> query = entityManager.createQuery("select coalesce(m.username, '익명') from Member10_2 m", String.class);
+		List<String> result = query.getResultList();
+
+		result.forEach(System.out::println);
+	}
+
+	private void caseExpressionNullIfQuery() {
+		entityManager.clear();
+		System.out.println("조건식 (CASE 식 : NULLIF) : Member 이름이 'Human'이면 null을 반환, 아닐 경우는 이름 그대로 반환");
+
+		TypedQuery<String> query = entityManager.createQuery("select nullif(m.username, 'Human') from Member10_2 m", String.class);
+		List<String> result = query.getResultList();
+		result.forEach(System.out::println);
 	}
 }
