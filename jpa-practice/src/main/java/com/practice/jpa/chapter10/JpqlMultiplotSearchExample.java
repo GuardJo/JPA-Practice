@@ -26,10 +26,13 @@ public class JpqlMultiplotSearchExample implements Runnable {
 	@Override
 	public void run() {
 		initSingleData();
-		initjoinTableData();
+		initJoinTableData();
 
 		findAllDataFromSingleTable();
 		findAllDataFromJoined();
+
+		searchTypeFromMultiplotEntities();
+		searchFromBookAuthor();
 	}
 
 	private void initSingleData() {
@@ -60,7 +63,7 @@ public class JpqlMultiplotSearchExample implements Runnable {
 		transaction.commit();
 	}
 
-	private void initjoinTableData() {
+	private void initJoinTableData() {
 		System.out.println("Init JoinTable Data");
 
 		Album album = Album.of(null, "Test Album", 30000, "Artist Jo");
@@ -87,6 +90,22 @@ public class JpqlMultiplotSearchExample implements Runnable {
 		System.out.println("Find all Multiplot Tables (Joined)");
 
 		TypedQuery<Item> query = entityManager.createQuery("select i from Item i", Item.class);
+		List<Item> items = query.getResultList();
+		items.forEach(System.out::println);
+	}
+
+	private void searchTypeFromMultiplotEntities() {
+		System.out.println("Search All type of Movie and Book from Multiplot Tables");
+
+		TypedQuery<Item> query = entityManager.createQuery("select i from Item i where type (i) in (Book, Movie)", Item.class);
+		List<Item> items = query.getResultList();
+		items.forEach(System.out::println);
+	}
+
+	private void searchFromBookAuthor() {
+		System.out.println("Treat 키워드를 사용하여 Author 컬럼에 데이터가 존재하는 Book 데이터 반환");
+
+		TypedQuery<Item> query = entityManager.createQuery("select i from Item i where treat(i as Book).author != null", Item.class);
 		List<Item> items = query.getResultList();
 		items.forEach(System.out::println);
 	}
