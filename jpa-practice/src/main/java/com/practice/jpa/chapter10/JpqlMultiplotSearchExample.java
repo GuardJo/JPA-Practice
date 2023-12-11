@@ -33,6 +33,8 @@ public class JpqlMultiplotSearchExample implements Runnable {
 
 		searchTypeFromMultiplotEntities();
 		searchFromBookAuthor();
+
+		useCustomFunction();
 	}
 
 	private void initSingleData() {
@@ -108,5 +110,13 @@ public class JpqlMultiplotSearchExample implements Runnable {
 		TypedQuery<Item> query = entityManager.createQuery("select i from Item i where treat(i as Book).author != null", Item.class);
 		List<Item> items = query.getResultList();
 		items.forEach(System.out::println);
+	}
+
+	private void useCustomFunction() {
+		System.out.println("직접 구성한 group_concat 함수를 사용하여 Item 이름 조회");
+
+		TypedQuery<String> query = entityManager.createQuery("select test_concat(i.name) from Item i", String.class);
+		List<String> results = query.getResultList();
+		results.forEach(System.out::println);
 	}
 }
