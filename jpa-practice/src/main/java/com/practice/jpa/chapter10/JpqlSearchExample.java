@@ -63,6 +63,8 @@ public class JpqlSearchExample implements Runnable {
 		collectionExpressionMembersQuery();
 		caseExpressionCoalesceQuery();
 		caseExpressionNullIfQuery();
+		executeNamedQuery();
+		executeXmlNamedQuery();
 	}
 
 	private void initData() {
@@ -524,5 +526,27 @@ public class JpqlSearchExample implements Runnable {
 		TypedQuery<String> query = entityManager.createQuery("select nullif(m.username, 'Human') from Member10_2 m", String.class);
 		List<String> result = query.getResultList();
 		result.forEach(System.out::println);
+	}
+
+	private void executeNamedQuery() {
+		entityManager.clear();
+		System.out.println("Member10_2 Entity 객체에 선언된 Named Query를 사용하여 데이터 조회");
+
+		TypedQuery<Member10_2> query = entityManager.createNamedQuery("Member10_2.findByName", Member10_2.class)
+			.setParameter("name", "Tester");
+
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void executeXmlNamedQuery() {
+		entityManager.clear();
+		System.out.println("ormMember10_2 XML 에 설정해둔 Named Query를 사용하여 데이터 조회");
+		String teamName = "New Team";
+
+		TypedQuery<Member10_2> query = entityManager.createNamedQuery("Member10_2.findByTeamName", Member10_2.class)
+			.setParameter("teamName", teamName);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
 	}
 }

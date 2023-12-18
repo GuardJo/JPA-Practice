@@ -7,10 +7,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "CH10_MEMBER_2")
+@NamedQuery(name = "Member10_2.findByName", query = "select m from Member10_2 m where m.username = :name")
 public class Member10_2 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
