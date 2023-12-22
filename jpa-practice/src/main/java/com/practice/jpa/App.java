@@ -13,6 +13,7 @@ import com.practice.jpa.chapter06.RelationshipMappingExample;
 import com.practice.jpa.chapter07.MultiIdExample;
 import com.practice.jpa.chapter08.DataLoadExample;
 import com.practice.jpa.chapter09.JpaDataTypeExample;
+import com.practice.jpa.chapter10.CriteriaExample;
 import com.practice.jpa.chapter10.JpqlMultiplotSearchExample;
 import com.practice.jpa.chapter10.JpqlSearchExample;
 import com.practice.jpa.chapter10.QuerySearchExample;
@@ -39,6 +40,7 @@ public class App {
 		QuerySearchExample querySearchExample = new QuerySearchExample(entityManagerFactory);
 		JpqlSearchExample jpqlSearchExample = new JpqlSearchExample(entityManagerFactory);
 		JpqlMultiplotSearchExample jpqlMultiplotSearchExample = new JpqlMultiplotSearchExample(entityManagerFactory);
+		CriteriaExample criteriaExample = new CriteriaExample(entityManagerFactory);
 
 		//        jpaExample.run();
 		//        entityLifecycleExample.run();
@@ -53,6 +55,7 @@ public class App {
 		querySearchExample.run();
 		jpqlSearchExample.run();
 		jpqlMultiplotSearchExample.run();
+		criteriaExample.run();
 
 		entityManagerFactory.close();
 	}
