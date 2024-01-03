@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,6 +14,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import com.practice.jpa.chapter10.domain.Member10_2;
+import com.practice.jpa.chapter10.domain.Team10;
+import com.practice.jpa.chapter10.dto.UserDto10;
 
 public class CriteriaExample implements Runnable {
 	private final EntityManager entityManager;
@@ -26,6 +29,10 @@ public class CriteriaExample implements Runnable {
 		searchAllMemberWithCriteria();
 		searchAllObjectWithCriteria();
 		searchMemberOnlyAdult();
+		searchSelectExample();
+		searchDistinctTeam();
+		convertWithConstruct();
+		searchTypeTuple();
 	}
 
 	private void searchAllMemberWithCriteria() {
@@ -73,5 +80,80 @@ public class CriteriaExample implements Runnable {
 		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
 		List<Member10_2> members = query.getResultList();
 		members.forEach(System.out::println);
+	}
+
+	private void searchSelectExample() {
+		System.out.println("조회대상 수에 따른 select문 처리");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaOneSelectQuery = criteriaBuilder.createQuery(Member10_2.class);
+		CriteriaQuery<Object[]> criteriaMultiSelectQuery = criteriaBuilder.createQuery(Object[].class);
+
+		Root<Member10_2> m = criteriaOneSelectQuery.from(Member10_2.class);
+		Root<Member10_2> m2 = criteriaMultiSelectQuery.from(Member10_2.class);
+
+		// 단일 조회 대상 처리
+		criteriaOneSelectQuery.select(m);
+		TypedQuery<Member10_2> query1 = entityManager.createQuery(criteriaOneSelectQuery);
+		List<Member10_2> members = query1.getResultList();
+		members.forEach(System.out::println);
+
+		// 여러 조회 대상 처리
+		criteriaMultiSelectQuery.multiselect(m2.get("username"), m2.get("age"));
+
+		TypedQuery<Object[]> query2 = entityManager.createQuery(criteriaMultiSelectQuery);
+		List<Object[]> result = query2.getResultList();
+
+		result.forEach((data) -> {
+			System.out.println(String.format("name : %s, age : %s", data[0], data[1]));
+		});
+	}
+
+	private void searchDistinctTeam() {
+		System.out.println("Member들의 팀 데이터 조회, 중복 제거");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Team10> criteriaQuery = criteriaBuilder.createQuery(Team10.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+
+		criteriaQuery.select(m.get("team")).distinct(true);
+
+		TypedQuery<Team10> query = entityManager.createQuery(criteriaQuery);
+		List<Team10> teams = query.getResultList();
+		teams.forEach(System.out::println);
+	}
+
+	private void convertWithConstruct() {
+		System.out.println("Criteria의 contruct 함수를 사용하여 조회 결과를 별도 객체로 매핑");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<UserDto10> criteriaQuery = criteriaBuilder.createQuery(UserDto10.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		criteriaQuery.select(criteriaBuilder.construct(UserDto10.class, m.get("username"), m.get("age")));
+
+		TypedQuery<UserDto10> query = entityManager.createQuery(criteriaQuery);
+		List<UserDto10> users = query.getResultList();
+		users.forEach(System.out::println);
+	}
+
+	private void searchTypeTuple() {
+		System.out.println("Criteria의 Tuple 타입으로 데이터를 반환받아, 이름 기반 매핑 작업 수행");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		criteriaQuery.multiselect(
+			m.get("username").alias("name"),
+			m.get("age").alias("age")
+		);
+
+		TypedQuery<Tuple> query = entityManager.createQuery(criteriaQuery);
+		List<Tuple> tuples = query.getResultList();
+		tuples.forEach((tuple -> {
+			System.out.println(String.format("name : %s, age : %s", tuple.get("name"), tuple.get("age")));
+		}));
 	}
 }
