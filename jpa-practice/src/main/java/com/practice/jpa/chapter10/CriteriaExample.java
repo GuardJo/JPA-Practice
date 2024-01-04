@@ -9,6 +9,7 @@ import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -33,6 +34,8 @@ public class CriteriaExample implements Runnable {
 		searchDistinctTeam();
 		convertWithConstruct();
 		searchTypeTuple();
+		searchGroupByTeam();
+		searchMemberOrderByAge();
 	}
 
 	private void searchAllMemberWithCriteria() {
@@ -155,5 +158,42 @@ public class CriteriaExample implements Runnable {
 		tuples.forEach((tuple -> {
 			System.out.println(String.format("name : %s, age : %s", tuple.get("name"), tuple.get("age")));
 		}));
+	}
+
+	private void searchGroupByTeam() {
+		System.out.println("Criteria의 GroupBy() 함수를 사용하여 member들을 Team 단위로 묶어서 조회");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+
+		Expression maxAge = criteriaBuilder.max(m.get("age"));
+		Expression minAge = criteriaBuilder.min(m.get("age"));
+
+		criteriaQuery.multiselect(m.get("team"), maxAge, minAge)
+			.groupBy(m.get("team"))
+			.having(criteriaBuilder.ge(minAge, 10));
+
+		TypedQuery<Object[]> query = entityManager.createQuery(criteriaQuery);
+		List<Object[]> objects = query.getResultList();
+		objects.forEach((obj) -> {
+			System.out.println(String.format("TeamName : %s, maxAge : %d, minAge : %d", obj[0], obj[1], obj[2]));
+		});
+	}
+
+	private void searchMemberOrderByAge() {
+		System.out.println("Criteria의 OrderBy() 함수를 사용하여 member들을 age 단위로 정렬");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaQuery = criteriaBuilder.createQuery(Member10_2.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		criteriaQuery.select(m)
+			.orderBy(criteriaBuilder.desc(m.get("age")));
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
 	}
 }
