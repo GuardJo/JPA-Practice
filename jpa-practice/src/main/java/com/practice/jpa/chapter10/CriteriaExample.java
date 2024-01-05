@@ -10,9 +10,12 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import com.practice.jpa.chapter10.domain.Member10_2;
 import com.practice.jpa.chapter10.domain.Team10;
@@ -36,6 +39,12 @@ public class CriteriaExample implements Runnable {
 		searchTypeTuple();
 		searchGroupByTeam();
 		searchMemberOrderByAge();
+		searchMemberWithJoinTeam();
+		searchMemberWithSubQuery();
+		searchMemberInTeam();
+		searchMemberCase();
+		searchMemberWithParams();
+		executeNativeQueryFunction();
 	}
 
 	private void searchAllMemberWithCriteria() {
@@ -195,5 +204,135 @@ public class CriteriaExample implements Runnable {
 		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
 		List<Member10_2> members = query.getResultList();
 		members.forEach(System.out::println);
+	}
+
+	private void searchMemberWithJoinTeam() {
+		System.out.println("Criteria의 join() 함수를 사용하여 Member와 Team 조인 및 특정 Team에 포함된 Member 조회");
+		String teamName = "New Team";
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaQuery = criteriaBuilder.createQuery(Member10_2.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		Join<Member10_2, Team10> t = m.join("team", JoinType.INNER);
+
+		criteriaQuery.select(m)
+			.where(criteriaBuilder.equal(t.get("name"), teamName));
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void searchMemberWithSubQuery() {
+		System.out.println("Criteria의 SubQuery 객체를 활용하여 Member의 평균 나이 이상인 Member 조회");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaQuery = criteriaBuilder.createQuery(Member10_2.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+
+		Subquery<Double> subquery = criteriaQuery.subquery(Double.class);
+		Root<Member10_2> m2 = subquery.from(Member10_2.class);
+		subquery.select(criteriaBuilder.avg(m2.get("age")));
+
+		criteriaQuery.select(m)
+			.where(criteriaBuilder.ge(m.get("age"), subquery));
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void searchMemberWithSubQuery2() {
+		System.out.println("Criteria의 Subquery 객체 및 correlate() 함수를 활용하여 메인 쿼리의 요소를 기반으로 서브 쿼리 구성 및 조건에 따른 Member 조회");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaQuery = criteriaBuilder.createQuery(Member10_2.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+
+		Subquery<Team10> subquery = criteriaQuery.subquery(Team10.class);
+		Root<Member10_2> subM = subquery.correlate(m);
+		Join<Member10_2, Team10> t = subM.join("team", JoinType.INNER);
+		subquery.where(criteriaBuilder.equal(t.get("name"), "New Team"));
+
+		criteriaQuery.select(m)
+			.where(criteriaBuilder.exists(subquery));
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void searchMemberInTeam() {
+		System.out.println("Criteria의 in() 함수를 활용하여 특정 Team에 속해 있는 Member 조회");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaQuery = criteriaBuilder.createQuery(Member10_2.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		Subquery<Team10> subquery = criteriaQuery.subquery(Team10.class);
+		Root<Team10> t2 = subquery.from(Team10.class);
+		subquery.select(t2)
+			.where(criteriaBuilder.equal(t2.get("name"), "New Team"));
+
+		criteriaQuery.select(m)
+			.where(criteriaBuilder.in(subquery)
+				.value(m.get("team")));
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void searchMemberCase() {
+		System.out.println("Criteria의 selectCase(), when() 함수를 활용하여 조건에 따른 분기 처리");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		criteriaQuery.select(
+			criteriaBuilder.selectCase()
+				.when(criteriaBuilder.ge(m.get("age"), 20), "Adult")
+				.otherwise("Baby")
+				.as(String.class)
+		);
+
+		TypedQuery<String> query = entityManager.createQuery(criteriaQuery);
+		List<String> result = query.getResultList();
+		result.forEach(System.out::println);
+	}
+
+	private void searchMemberWithParams() {
+		System.out.println("Criteria의 parameter() 함수를 활용하여, 별도 파라미터에 대한 값주입으로 조회");
+		String memberName = "Tester";
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaQuery = criteriaBuilder.createQuery(Member10_2.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		criteriaQuery.select(m)
+			.where(criteriaBuilder.equal(m.get("username"), criteriaBuilder.parameter(String.class, "memberName")));
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery)
+			.setParameter("memberName", memberName);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void executeNativeQueryFunction() {
+		System.out.println("Criteria의 function() 함수를 활용하여, CustomDialect에 구성된 Narive 함수 수행");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		criteriaQuery.select(criteriaBuilder.function("test_concat", String.class, m.get("username")));
+
+		TypedQuery<String> query = entityManager.createQuery(criteriaQuery);
+		List<String> result = query.getResultList();
+		result.forEach(System.out::println);
 	}
 }
