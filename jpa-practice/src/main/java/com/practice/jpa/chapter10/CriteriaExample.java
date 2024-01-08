@@ -1,6 +1,8 @@
 package com.practice.jpa.chapter10;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,6 +20,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import com.practice.jpa.chapter10.domain.Member10_2;
+import com.practice.jpa.chapter10.domain.Member10_2_;
 import com.practice.jpa.chapter10.domain.Team10;
 import com.practice.jpa.chapter10.dto.UserDto10;
 
@@ -45,6 +48,8 @@ public class CriteriaExample implements Runnable {
 		searchMemberCase();
 		searchMemberWithParams();
 		executeNativeQueryFunction();
+		searchDynamicQuery(20, "Tester", "New Team");
+		searchMemberWithMetaModel();
 	}
 
 	private void searchAllMemberWithCriteria() {
@@ -334,5 +339,48 @@ public class CriteriaExample implements Runnable {
 		TypedQuery<String> query = entityManager.createQuery(criteriaQuery);
 		List<String> result = query.getResultList();
 		result.forEach(System.out::println);
+	}
+
+	private void searchDynamicQuery(int age, String username, String teamName) {
+		System.out.println("Criteria를 활용하여 검색 인자 유무에 따른 동적 쿼리 조회");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaQuery = criteriaBuilder.createQuery(Member10_2.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		Join<Member10_2, Team10> t = m.join("team");
+
+		List<Predicate> predicates = new ArrayList<>();
+		if (age >= 0) {
+			predicates.add(criteriaBuilder.ge(m.get("age"), age));
+		}
+		if (!Objects.isNull(username)) {
+			predicates.add(criteriaBuilder.equal(m.get("username"), username));
+		}
+		if (!Objects.isNull(teamName)) {
+			predicates.add(criteriaBuilder.equal(t.get("name"), teamName));
+		}
+
+		criteriaQuery.select(m)
+			.where(predicates.toArray(new Predicate[0]));
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
+	}
+
+	private void searchMemberWithMetaModel() {
+		System.out.println("Criteria 메타 모델을 기반으로 데이터 조회");
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Member10_2> criteriaQuery = criteriaBuilder.createQuery(Member10_2.class);
+
+		Root<Member10_2> m = criteriaQuery.from(Member10_2.class);
+		criteriaQuery.select(m)
+			.where(criteriaBuilder.equal(m.get(Member10_2_.username), "Tester"));
+
+		TypedQuery<Member10_2> query = entityManager.createQuery(criteriaQuery);
+		List<Member10_2> members = query.getResultList();
+		members.forEach(System.out::println);
 	}
 }
