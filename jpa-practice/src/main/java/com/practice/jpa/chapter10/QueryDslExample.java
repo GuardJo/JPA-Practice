@@ -10,6 +10,7 @@ import com.mysema.query.SearchResults;
 import com.mysema.query.jpa.impl.JPAQuery;
 import com.practice.jpa.chapter10.domain.Member10_2;
 import com.practice.jpa.chapter10.domain.QMember10_2;
+import com.practice.jpa.chapter10.domain.QTeam10;
 
 public class QueryDslExample implements Runnable {
 	private final EntityManager entityManager;
@@ -26,6 +27,10 @@ public class QueryDslExample implements Runnable {
 		searchByMembersOrderByAge2();
 		searchByTotalCountWithPagination();
 		groupByMembers();
+		searchByMemberInnerJoinTeam();
+		searchByMemberInnerJoinTeamOnName();
+		searchByMemberFetchJoinTeam();
+		searchByMemberThetaJoinTeam();
 	}
 
 	private void searchAllMembers() {
@@ -117,5 +122,72 @@ public class QueryDslExample implements Runnable {
 			.list(qMember.age.avg());
 
 		avgAges.forEach(avg -> System.out.printf("avg : %f\n", avg));
+	}
+
+	private void searchByMemberInnerJoinTeam() {
+		System.out.println("QueryDSL을 활용하여 inner join을 통한 Member + Team 목록 반환");
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+		QTeam10 qTeam = QTeam10.team10;
+
+		List<Member10_2> members = jpaQuery.from(qMember)
+			.innerJoin(qMember.team, qTeam)
+			.list(qMember);
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchByMemberInnerJoinTeamOnName() {
+		System.out.println("QueryDSL을 활용하여 inner join 및 on 함수를 통한 조건 검색 반환");
+
+		String searchTeamName = "New Team";
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+		QTeam10 qTeam = QTeam10.team10;
+
+		List<Member10_2> members = jpaQuery.from(qMember)
+			.join(qMember.team, qTeam)
+			.on(qTeam.name.eq(searchTeamName))
+			.list(qMember);
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchByMemberFetchJoinTeam() {
+		System.out.println("QueryDSL을 활용하여 fetch join을 통해 Member <-> Team 검색 반환");
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+		QTeam10 qTeam = QTeam10.team10;
+
+		List<Member10_2> members = jpaQuery.from(qMember)
+			.join(qMember.team, qTeam)
+			.fetch()
+			.list(qMember);
+
+		members.forEach(System.out::println);
+	}
+
+	private void searchByMemberThetaJoinTeam() {
+		System.out.println("QueryDSL을 활용하여 theta join을 통해 Member와 Team 검색 반환");
+
+		String userName = "Tester";
+		String teamName = "New Team";
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+		QTeam10 qTeam = QTeam10.team10;
+
+		List<Member10_2> members = jpaQuery.from(qMember, qTeam)
+			.where(qMember.username.eq(userName).and(qTeam.name.eq(teamName)))
+			.list(qMember);
+
+		members.forEach(System.out::println);
 	}
 }
