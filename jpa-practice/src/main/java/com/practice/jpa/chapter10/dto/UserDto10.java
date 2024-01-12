@@ -4,6 +4,10 @@ public class UserDto10 {
 	private String name;
 	private int age;
 
+	public UserDto10() {
+
+	}
+
 	public UserDto10(String name, int age) {
 		this.name = name;
 		this.age = age;
@@ -15,6 +19,14 @@ public class UserDto10 {
 
 	public int getAge() {
 		return age;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
 	}
 
 	@Override

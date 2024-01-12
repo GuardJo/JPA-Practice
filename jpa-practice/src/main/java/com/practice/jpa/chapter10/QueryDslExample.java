@@ -7,10 +7,15 @@ import javax.persistence.EntityManagerFactory;
 
 import com.mysema.query.QueryModifiers;
 import com.mysema.query.SearchResults;
+import com.mysema.query.Tuple;
+import com.mysema.query.jpa.JPASubQuery;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.Projections;
 import com.practice.jpa.chapter10.domain.Member10_2;
 import com.practice.jpa.chapter10.domain.QMember10_2;
 import com.practice.jpa.chapter10.domain.QTeam10;
+import com.practice.jpa.chapter10.domain.Team10;
+import com.practice.jpa.chapter10.dto.UserDto10;
 
 public class QueryDslExample implements Runnable {
 	private final EntityManager entityManager;
@@ -31,6 +36,13 @@ public class QueryDslExample implements Runnable {
 		searchByMemberInnerJoinTeamOnName();
 		searchByMemberFetchJoinTeam();
 		searchByMemberThetaJoinTeam();
+		searchTeamInMember();
+		searchTeamInUniqueMember();
+		searchMemberName();
+		searchMemberNameAndTeamName();
+		searchMemberToUserDto();
+		searchMemberToUserDtoWithFields();
+		searchMemberToUserDtoWithConstructor();
 	}
 
 	private void searchAllMembers() {
@@ -189,5 +201,119 @@ public class QueryDslExample implements Runnable {
 			.list(qMember);
 
 		members.forEach(System.out::println);
+	}
+
+	private void searchTeamInMember() {
+		System.out.println("QueryDSL을 활용하여 조건에 맞는 팀원이 특정 팀에 속해 있는지 여부를 서브쿼리로 조회");
+
+		String usernName = "Tester";
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QTeam10 qTeam = QTeam10.team10;
+		QMember10_2 qMember = QMember10_2.member10_2;
+
+		List<Team10> teams = jpaQuery.from(qTeam)
+			.where(qTeam.in(
+				new JPASubQuery()
+					.from(qMember)
+					.where(qMember.username.eq(usernName))
+					.list(qMember.team)
+			))
+			.list(qTeam);
+
+		teams.forEach(System.out::println);
+	}
+
+	private void searchTeamInUniqueMember() {
+		System.out.println("QueryDSL을 활용하여 조건에 맞는 팀원이 속해 있는 팀을 서브쿼리로 조회");
+
+		long memberId = 1L;
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QTeam10 qTeam = QTeam10.team10;
+		QMember10_2 qMember = QMember10_2.member10_2;
+
+		List<Team10> teams = jpaQuery.from(qTeam)
+			.where(qTeam.eq(
+				new JPASubQuery()
+					.from(qMember)
+					.where(qMember.id.eq(memberId))
+					.unique(qMember.team)
+			))
+			.list(qTeam);
+
+		teams.forEach(System.out::println);
+	}
+
+	private void searchMemberName() {
+		System.out.println("QueryDSL의 프로젝션 기능을 통해 단일 요소 (멤버 이름) 조회 요청");
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+
+		List<String> memberNames = jpaQuery.from(qMember)
+			.list(qMember.username);
+
+		memberNames.forEach(System.out::println);
+	}
+
+	private void searchMemberNameAndTeamName() {
+		System.out.println("QueryDSL의 프로젝션 기능을 통해 Tuple로 member의 이름과 속한 팀이름 조회 요청");
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+		QTeam10 qTeam = QTeam10.team10;
+
+		List<Tuple> tuples = jpaQuery.from(qMember)
+			.join(qMember.team, qTeam)
+			.list(qMember.username, qTeam.name);
+		// .list(new QTuple(qMember.username, qTeam.name)) 과 동일
+
+		tuples.forEach((tuple ->
+			System.out.printf("username : %s, teamName : %s\n", tuple.get(qMember.username), tuple.get(qTeam.name))
+		));
+	}
+
+	private void searchMemberToUserDto() {
+		System.out.println("QueryDSL의 프로젝션 기능(bean)을 통해 조회된 Member들을 UserDTO로 반환");
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+
+		List<UserDto10> userDtos = jpaQuery.from(qMember)
+			.list(Projections.bean(UserDto10.class, qMember.username.as("name"), qMember.age));
+
+		userDtos.forEach(System.out::println);
+	}
+
+	private void searchMemberToUserDtoWithFields() {
+		System.out.println("QueryDSL의 프로젝션 기능(fields)을 통해 조회된 Member들을 UserDTO로 반환");
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+
+		List<UserDto10> userDtos = jpaQuery.from(qMember)
+			.list(Projections.fields(UserDto10.class, qMember.username.as("name"), qMember.age));
+
+		userDtos.forEach(System.out::println);
+	}
+
+	private void searchMemberToUserDtoWithConstructor() {
+		System.out.println("QueryDSL의 프로젝션 기능(constructor)을 통해 조회된 Member들을 UserDTO로 반환");
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QMember10_2 qMember = QMember10_2.member10_2;
+
+		List<UserDto10> userDtos = jpaQuery.from(qMember)
+			.list(Projections.constructor(UserDto10.class, qMember.username.as("name"), qMember.age));
+
+		userDtos.forEach(System.out::println);
 	}
 }
