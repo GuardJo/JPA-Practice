@@ -4,15 +4,20 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 import com.mysema.query.QueryModifiers;
 import com.mysema.query.SearchResults;
 import com.mysema.query.Tuple;
 import com.mysema.query.jpa.JPASubQuery;
+import com.mysema.query.jpa.impl.JPADeleteClause;
 import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.jpa.impl.JPAUpdateClause;
 import com.mysema.query.types.Projections;
 import com.practice.jpa.chapter10.domain.Member10_2;
+import com.practice.jpa.chapter10.domain.Product10;
 import com.practice.jpa.chapter10.domain.QMember10_2;
+import com.practice.jpa.chapter10.domain.QProduct10;
 import com.practice.jpa.chapter10.domain.QTeam10;
 import com.practice.jpa.chapter10.domain.Team10;
 import com.practice.jpa.chapter10.dto.UserDto10;
@@ -26,6 +31,7 @@ public class QueryDslExample implements Runnable {
 
 	@Override
 	public void run() {
+		initProducts();
 		searchAllMembers();
 		searchByNameMembers();
 		searchByMembersOrderByAge();
@@ -43,6 +49,19 @@ public class QueryDslExample implements Runnable {
 		searchMemberToUserDto();
 		searchMemberToUserDtoWithFields();
 		searchMemberToUserDtoWithConstructor();
+		updateProductsByName();
+		deleteProductsByName();
+	}
+
+	private void initProducts() {
+		Product10 product1 = Product10.create("Product1", 3000, 10);
+		Product10 product2 = Product10.create("Product2", 5000, 10);
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		entityManager.persist(product1);
+		entityManager.persist(product2);
+		transaction.commit();
 	}
 
 	private void searchAllMembers() {
@@ -315,5 +334,56 @@ public class QueryDslExample implements Runnable {
 			.list(Projections.constructor(UserDto10.class, qMember.username.as("name"), qMember.age));
 
 		userDtos.forEach(System.out::println);
+	}
+
+	private void updateProductsByName() {
+		System.out.println("QueryDSL의 JPAUpdateClause 객체를 통해 수정 배치 쿼리 요청");
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		String productName = "Product1";
+
+		QProduct10 qProduct = QProduct10.product10;
+		JPAUpdateClause updateClause = new JPAUpdateClause(entityManager, qProduct);
+
+		long count = updateClause.where(qProduct.name.eq(productName))
+			.set(qProduct.stockAmount, qProduct.stockAmount.add(1000))
+			.execute();
+
+		transaction.commit();
+
+		System.out.printf("Update Count : %d\n", count);
+
+		entityManager.clear();
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+		List<Product10> products = jpaQuery.from(qProduct)
+			.list(qProduct);
+
+		products.forEach(System.out::println);
+	}
+
+	private void deleteProductsByName() {
+		System.out.println("QueryDSL의 JPADeleteClause 객체를 통해 삭제 배치 쿼리 요청");
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+
+		String productName = "Product1";
+
+		QProduct10 qProduct = QProduct10.product10;
+		JPADeleteClause deleteClause = new JPADeleteClause(entityManager, qProduct);
+
+		long count = deleteClause.where(qProduct.name.eq(productName))
+			.execute();
+
+		System.out.printf("Delete Count : %d\n", count);
+
+		transaction.commit();
+		entityManager.clear();
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+		List<Product10> products = jpaQuery.from(qProduct)
+			.list(qProduct);
+
+		products.forEach(System.out::println);
 	}
 }
