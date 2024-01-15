@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
+import com.mysema.query.BooleanBuilder;
 import com.mysema.query.QueryModifiers;
 import com.mysema.query.SearchResults;
 import com.mysema.query.Tuple;
@@ -51,6 +52,8 @@ public class QueryDslExample implements Runnable {
 		searchMemberToUserDtoWithConstructor();
 		updateProductsByName();
 		deleteProductsByName();
+		searchProductsIfNotNull();
+		searchExpensiveProduct();
 	}
 
 	private void initProducts() {
@@ -382,6 +385,42 @@ public class QueryDslExample implements Runnable {
 
 		JPAQuery jpaQuery = new JPAQuery(entityManager);
 		List<Product10> products = jpaQuery.from(qProduct)
+			.list(qProduct);
+
+		products.forEach(System.out::println);
+	}
+
+	private void searchProductsIfNotNull() {
+		System.out.println("QueryDSL의 BooleanBuilder 객체를 활용하여 동적 조건에 따라 조건 쿼리 추가");
+		int limitStock = 30;
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+
+		QProduct10 qProduct = QProduct10.product10;
+
+		BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+		if (limitStock > 0) {
+			booleanBuilder.and(qProduct.stockAmount.lt(limitStock));
+		}
+
+		List<Product10> products = jpaQuery.from(qProduct)
+			.where(booleanBuilder)
+			.list(qProduct);
+
+		products.forEach(System.out::println);
+	}
+
+	private void searchExpensiveProduct() {
+		System.out.println("QueryDSL의 QueryDelegate 어노테이션을 통해 구성된 사용자 정의 조건 함수 수행");
+
+		int expensiveLimit = 3000;
+
+		JPAQuery jpaQuery = new JPAQuery(entityManager);
+		QProduct10 qProduct = QProduct10.product10;
+
+		List<Product10> products = jpaQuery.from(qProduct)
+			.where(qProduct.isExpensive(expensiveLimit))
 			.list(qProduct);
 
 		products.forEach(System.out::println);
