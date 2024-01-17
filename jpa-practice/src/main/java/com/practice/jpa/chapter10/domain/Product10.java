@@ -1,13 +1,21 @@
 package com.practice.jpa.chapter10.domain;
 
+import javax.persistence.ColumnResult;
 import javax.persistence.Entity;
+import javax.persistence.EntityResult;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "CH10_PRODUCT")
+@SqlResultSetMapping(
+	name = "entityWithTotalCount",
+	entities = {@EntityResult(entityClass = Product10.class)},
+	columns = {@ColumnResult(name = "total_product")}
+)
 public class Product10 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
