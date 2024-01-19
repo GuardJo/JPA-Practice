@@ -21,6 +21,8 @@ public class NativeQueryExample implements Runnable {
 		findMembersByName();
 		searchNamesInMembers();
 		findByProductWithTotalCount();
+		findByProductsWithTotalCountFromNamedNativeQuery();
+		findByProductNameAndPrice();
 	}
 
 	private void findMembersByName() {
@@ -60,6 +62,30 @@ public class NativeQueryExample implements Runnable {
 
 		for (Object[] o : objects) {
 			System.out.printf("%s, total = %d%n", o[0], (BigInteger)o[1]);
+		}
+	}
+
+	private void findByProductsWithTotalCountFromNamedNativeQuery() {
+		System.out.println("Named Native Query로 구성된 쿼리를 요청하여 Product의 컬럼, 전체 수를 함께 조회");
+
+		Query query = entityManager.createNamedQuery("Product.findEntityWithTotalCount");
+
+		List<Object[]> objects = query.getResultList();
+
+		for (Object[] o : objects) {
+			System.out.printf("%s, total = %d%n", o[0], (BigInteger)o[1]);
+		}
+	}
+
+	private void findByProductNameAndPrice() {
+		System.out.println("Named Native Query(XML 설정)로 구성된 쿼리를 요청하여 Product의 이름, 가격을 반환");
+
+		Query query = entityManager.createNamedQuery("Product.findNameAndPrice");
+
+		List<Object[]> objects = query.getResultList();
+
+		for (Object[] o : objects) {
+			System.out.printf("product ( name : %s, price : %d)%n", o[0], (int)o[1]);
 		}
 	}
 }

@@ -6,6 +6,7 @@ import javax.persistence.EntityResult;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
@@ -15,6 +16,11 @@ import javax.persistence.Table;
 	name = "entityWithTotalCount",
 	entities = {@EntityResult(entityClass = Product10.class)},
 	columns = {@ColumnResult(name = "total_product")}
+)
+@NamedNativeQuery(
+	name = "Product.findEntityWithTotalCount",
+	query = "SELECT p.id, p.name, p.price, p.stock_amount, (select count(p2.id) from CH10_PRODUCT p2) as total_product FROM CH10_PRODUCT p GROUP BY p.id",
+	resultSetMapping = "entityWithTotalCount"
 )
 public class Product10 {
 	@Id

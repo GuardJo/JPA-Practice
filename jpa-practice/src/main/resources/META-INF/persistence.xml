@@ -5,6 +5,7 @@
              version="3.0">
     <persistence-unit name="jpabook">
         <mapping-file>META-INF/ormMember10_2.xml</mapping-file>
+        <mapping-file>META-INF/ormProduct10.xml</mapping-file>
         <properties>
             <!-- 필수 속성 -->
             <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
