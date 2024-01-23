@@ -65,6 +65,7 @@ public class JpqlSearchExample implements Runnable {
 		caseExpressionNullIfQuery();
 		executeNamedQuery();
 		executeXmlNamedQuery();
+		bulkUpdateMembers();
 	}
 
 	private void initData() {
@@ -548,5 +549,18 @@ public class JpqlSearchExample implements Runnable {
 			.setParameter("teamName", teamName);
 		List<Member10_2> members = query.getResultList();
 		members.forEach(System.out::println);
+	}
+
+	private void bulkUpdateMembers() {
+		entityManager.clear();
+		System.out.println("JPA의 벌크 연산 처리를 통해 Member들의 이름 전체 변경");
+
+		EntityTransaction transaction = entityManager.getTransaction();
+		transaction.begin();
+		int bulkCount = entityManager.createQuery("update Member10 m set m.name = 'Bulk Tester'")
+			.executeUpdate();
+		transaction.commit();
+
+		System.out.printf("Bulk Count : %d%n", bulkCount);
 	}
 }
