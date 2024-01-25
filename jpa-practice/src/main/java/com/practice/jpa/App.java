@@ -13,6 +13,12 @@ import com.practice.jpa.chapter06.RelationshipMappingExample;
 import com.practice.jpa.chapter07.MultiIdExample;
 import com.practice.jpa.chapter08.DataLoadExample;
 import com.practice.jpa.chapter09.JpaDataTypeExample;
+import com.practice.jpa.chapter10.CriteriaExample;
+import com.practice.jpa.chapter10.JpqlMultiplotSearchExample;
+import com.practice.jpa.chapter10.JpqlSearchExample;
+import com.practice.jpa.chapter10.NativeQueryExample;
+import com.practice.jpa.chapter10.QueryDslExample;
+import com.practice.jpa.chapter10.QuerySearchExample;
 
 /**
  * Hello JPA!
@@ -33,6 +39,12 @@ public class App {
 		MultiIdExample multiIdExample = new MultiIdExample(entityManagerFactory);
 		DataLoadExample dataLoadExample = new DataLoadExample(entityManagerFactory);
 		JpaDataTypeExample jpaDataTypeExample = new JpaDataTypeExample(entityManagerFactory);
+		QuerySearchExample querySearchExample = new QuerySearchExample(entityManagerFactory);
+		JpqlSearchExample jpqlSearchExample = new JpqlSearchExample(entityManagerFactory);
+		JpqlMultiplotSearchExample jpqlMultiplotSearchExample = new JpqlMultiplotSearchExample(entityManagerFactory);
+		CriteriaExample criteriaExample = new CriteriaExample(entityManagerFactory);
+		QueryDslExample queryDslExample = new QueryDslExample(entityManagerFactory);
+		NativeQueryExample nativeQueryExample = new NativeQueryExample(entityManagerFactory);
 
 		//        jpaExample.run();
 		//        entityLifecycleExample.run();
@@ -43,8 +55,14 @@ public class App {
 		// relationshipMappingExample.run();
 		// multiIdExample.run();
 		// dataLoadExample.run();
-		jpaDataTypeExample.run();
-
+		// jpaDataTypeExample.run();
+		querySearchExample.run();
+		jpqlSearchExample.run();
+		jpqlMultiplotSearchExample.run();
+		criteriaExample.run();
+		queryDslExample.run();
+		nativeQueryExample.run();
+		
 		entityManagerFactory.close();
 	}
 }
